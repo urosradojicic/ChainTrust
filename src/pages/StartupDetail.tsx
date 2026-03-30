@@ -200,8 +200,37 @@ function ViewOnBaseButton() {
     </a>
   );
 }
+function AuditTrailTab({ startupId }: { startupId: string }) {
+  const { data: entries = [], isLoading } = useAuditLog(startupId);
+  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  if (entries.length === 0) return <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground"><History className="mx-auto h-8 w-8 mb-2 opacity-50" /><p>No on-chain changes recorded yet.</p></div>;
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="border-b border-border bg-muted/30">
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Field</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Old</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">New</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Tx Hash</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Date</th>
+          </tr></thead>
+          <tbody>{entries.map(e => (
+            <tr key={e.id} className="border-b border-border/50 hover:bg-muted/20">
+              <td className="px-4 py-3 font-medium capitalize">{e.field_changed.replace(/_/g, ' ')}</td>
+              <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[120px] truncate">{e.old_value || '—'}</td>
+              <td className="px-4 py-3 font-mono text-xs max-w-[120px] truncate">{e.new_value || '—'}</td>
+              <td className="px-4 py-3"><a href={`https://sepolia.basescan.org/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
+              <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(e.changed_at).toLocaleDateString()}</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
-export default function StartupDetail() {
+
   const { id } = useParams<{ id: string }>();
   const { data: startup, isLoading } = useStartup(id);
   const { data: metrics = [] } = useMetricsHistory(id);
