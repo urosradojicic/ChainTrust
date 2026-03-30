@@ -88,7 +88,7 @@ export default function Leaderboard() {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
-            {['All', ...CATEGORIES].map(c => (
+            {CATEGORIES.map(c => (
               <SelectItem key={c} value={c}>{c}</SelectItem>
             ))}
           </SelectContent>
