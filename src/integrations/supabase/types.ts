@@ -171,6 +171,47 @@ export type Database = {
         }
         Relationships: []
       }
+      startup_audit_log: {
+        Row: {
+          changed_at: string
+          field_changed: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          startup_id: string
+          tx_hash: string
+          user_id: string
+        }
+        Insert: {
+          changed_at?: string
+          field_changed: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          startup_id: string
+          tx_hash: string
+          user_id: string
+        }
+        Update: {
+          changed_at?: string
+          field_changed?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          startup_id?: string
+          tx_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "startup_audit_log_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       startups: {
         Row: {
           blockchain: string
@@ -197,6 +238,7 @@ export type Database = {
           tokenomics_score: number
           treasury: number
           trust_score: number
+          user_id: string | null
           users: number
           verified: boolean
           website: string | null
@@ -227,6 +269,7 @@ export type Database = {
           tokenomics_score?: number
           treasury?: number
           trust_score?: number
+          user_id?: string | null
           users?: number
           verified?: boolean
           website?: string | null
@@ -257,6 +300,7 @@ export type Database = {
           tokenomics_score?: number
           treasury?: number
           trust_score?: number
+          user_id?: string | null
           users?: number
           verified?: boolean
           website?: string | null
