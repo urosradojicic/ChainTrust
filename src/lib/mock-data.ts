@@ -27,10 +27,10 @@ export interface ExtendedData {
   fundingRounds: FundingRound[];
   tokenDistribution: TokenDistribution[];
   vestingSchedule: { period: string; unlocked: number }[];
-  whaleConcentration: number; // % held by top 10 wallets
+  whaleConcentration: number;
   inflationRate: number;
-  sdgAlignment: number[]; // UN SDG numbers
-  energyConsumption: number; // kWh per month
+  sdgAlignment: number[];
+  energyConsumption: number;
   carbonOffsetHistory: { month: string; tons: number }[];
   pledges: Pledge[];
   platformAvgSustainability: number;
@@ -56,49 +56,58 @@ export interface StartupData {
   revenueHistory: { month: string; value: number }[];
   userHistory: { month: string; value: number }[];
   carbonHistory: { month: string; value: number }[];
-  metricsHistory: {
-    date: string;
-    mrr: number;
-    users: number;
-    growth: number;
-    verified: boolean;
-  }[];
+  metricsHistory: { date: string; mrr: number; users: number; growth: number; verified: boolean }[];
   txHash: string;
   blockNumber: number;
   sustainability: SustainabilityData;
   extended: ExtendedData;
 }
 
+const MONTHS_12 = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+const MONTHS_6 = ['Oct','Nov','Dec','Jan','Feb','Mar'];
+
+function makeFinancials(revs: number[], costBase: number): { month: string; revenue: number; costs: number; profit: number }[] {
+  return MONTHS_12.map((m, i) => ({ month: m, revenue: revs[i], costs: costBase, profit: revs[i] - costBase }));
+}
+
+function makeCarbonHist(vals: number[]): { month: string; tons: number }[] {
+  return MONTHS_6.map((m, i) => ({ month: m, tons: vals[i] }));
+}
+
+function makeRevHist(vals: number[]): { month: string; value: number }[] {
+  return MONTHS_6.map((m, i) => ({ month: m, value: vals[i] }));
+}
+
+function makeUserHist(vals: number[]): { month: string; value: number }[] {
+  return MONTHS_6.map((m, i) => ({ month: m, value: vals[i] }));
+}
+
+const defaultTokenDist: TokenDistribution[] = [
+  { label: 'Community', value: 35, color: '#10B981' },
+  { label: 'Team', value: 20, color: '#534AB7' },
+  { label: 'Investors', value: 18, color: '#3B82F6' },
+  { label: 'Treasury', value: 15, color: '#EAB308' },
+  { label: 'Liquidity', value: 12, color: '#F97316' },
+];
+
+const defaultVesting = [
+  { period: 'Month 0', unlocked: 10 }, { period: 'Month 6', unlocked: 15 },
+  { period: 'Year 1', unlocked: 25 }, { period: 'Year 2', unlocked: 50 },
+  { period: 'Year 3', unlocked: 75 }, { period: 'Year 4', unlocked: 100 },
+];
+
 export const STARTUPS: StartupData[] = [
   {
-    id: 'payflow',
-    name: 'PayFlow',
-    category: 'Fintech',
-    verified: true,
-    trustScore: 92,
-    mrr: 125000,
-    users: 15000,
-    growth: 12.5,
+    id: 'payflow', name: 'PayFlow', category: 'Fintech', verified: true, trustScore: 92,
+    mrr: 125000, users: 15000, growth: 12.5,
     mrrHistory: [78000, 85000, 92000, 101000, 112000, 125000],
     description: 'Next-generation payment infrastructure for Web3 businesses. Seamless fiat on/off ramps with instant settlement.',
-    website: 'https://payflow.example.com',
-    registeredAt: 1695830400,
+    website: 'https://payflow.example.com', registeredAt: 1695830400,
     owner: '0x1a2b3c4d5e6f7890abcdef1234567890abcdef12',
-    burnRate: 45000,
-    runway: 18,
-    carbonOffset: 34,
-    revenueHistory: [
-      { month: 'Oct', value: 78000 }, { month: 'Nov', value: 85000 }, { month: 'Dec', value: 92000 },
-      { month: 'Jan', value: 101000 }, { month: 'Feb', value: 112000 }, { month: 'Mar', value: 125000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 9200 }, { month: 'Nov', value: 10500 }, { month: 'Dec', value: 11800 },
-      { month: 'Jan', value: 12900 }, { month: 'Feb', value: 14100 }, { month: 'Mar', value: 15000 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 12 }, { month: 'Nov', value: 15 }, { month: 'Dec', value: 18 },
-      { month: 'Jan', value: 22 }, { month: 'Feb', value: 28 }, { month: 'Mar', value: 34 },
-    ],
+    burnRate: 45000, runway: 18, carbonOffset: 34,
+    revenueHistory: makeRevHist([78000, 85000, 92000, 101000, 112000, 125000]),
+    userHistory: makeUserHist([9200, 10500, 11800, 12900, 14100, 15000]),
+    carbonHistory: makeRevHist([12, 15, 18, 22, 28, 34]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 78000, users: 9200, growth: 8.2, verified: true },
       { date: '2025-11-01', mrr: 85000, users: 10500, growth: 9.0, verified: true },
@@ -118,35 +127,18 @@ export const STARTUPS: StartupData[] = [
     },
     extended: {
       teamSize: 24, foundedDate: '2023-06-15', treasury: 2800000,
-      financials: [
-        { month: 'Apr', revenue: 65000, costs: 42000, profit: 23000 }, { month: 'May', revenue: 70000, costs: 43000, profit: 27000 },
-        { month: 'Jun', revenue: 72000, costs: 44000, profit: 28000 }, { month: 'Jul', revenue: 75000, costs: 44500, profit: 30500 },
-        { month: 'Aug', revenue: 78000, costs: 45000, profit: 33000 }, { month: 'Sep', revenue: 80000, costs: 45000, profit: 35000 },
-        { month: 'Oct', revenue: 85000, costs: 45000, profit: 40000 }, { month: 'Nov', revenue: 92000, costs: 45000, profit: 47000 },
-        { month: 'Dec', revenue: 98000, costs: 45000, profit: 53000 }, { month: 'Jan', revenue: 108000, costs: 45000, profit: 63000 },
-        { month: 'Feb', revenue: 118000, costs: 45000, profit: 73000 }, { month: 'Mar', revenue: 125000, costs: 45000, profit: 80000 },
-      ],
+      financials: makeFinancials([65000,70000,72000,75000,78000,80000,85000,92000,98000,108000,118000,125000], 45000),
       fundingRounds: [
         { round: 'Pre-Seed', amount: 500000, date: '2023-06', valuation: 3000000 },
         { round: 'Seed', amount: 2500000, date: '2024-01', valuation: 12000000 },
         { round: 'Series A', amount: 8000000, date: '2025-03', valuation: 45000000 },
       ],
-      tokenDistribution: [
-        { label: 'Community', value: 35, color: '#10B981' }, { label: 'Team', value: 20, color: '#534AB7' },
-        { label: 'Investors', value: 18, color: '#3B82F6' }, { label: 'Treasury', value: 15, color: '#EAB308' },
-        { label: 'Liquidity', value: 12, color: '#F97316' },
-      ],
-      vestingSchedule: [
-        { period: 'Month 0', unlocked: 10 }, { period: 'Month 6', unlocked: 15 }, { period: 'Year 1', unlocked: 25 },
-        { period: 'Year 2', unlocked: 50 }, { period: 'Year 3', unlocked: 75 }, { period: 'Year 4', unlocked: 100 },
-      ],
+      tokenDistribution: defaultTokenDist,
+      vestingSchedule: defaultVesting,
       whaleConcentration: 32, inflationRate: 2.0,
       sdgAlignment: [7, 9, 11, 13],
       energyConsumption: 120,
-      carbonOffsetHistory: [
-        { month: 'Oct', tons: 12 }, { month: 'Nov', tons: 15 }, { month: 'Dec', tons: 18 },
-        { month: 'Jan', tons: 22 }, { month: 'Feb', tons: 28 }, { month: 'Mar', tons: 34 },
-      ],
+      carbonOffsetHistory: makeCarbonHist([12, 15, 18, 22, 28, 34]),
       pledges: [
         { text: 'Achieve Net Zero emissions by 2027', dateCommitted: '2024-01-15', active: true },
         { text: '100% renewable-powered hosting', dateCommitted: '2024-03-01', active: true },
@@ -156,33 +148,17 @@ export const STARTUPS: StartupData[] = [
       platformAvgSustainability: 62,
     },
   },
-    name: 'CloudMetrics',
-    category: 'SaaS',
-    verified: true,
-    trustScore: 87,
-    mrr: 89000,
-    users: 8200,
-    growth: 8.3,
+  {
+    id: 'cloudmetrics', name: 'CloudMetrics', category: 'SaaS', verified: true, trustScore: 87,
+    mrr: 89000, users: 8200, growth: 8.3,
     mrrHistory: [62000, 68000, 72000, 78000, 82000, 89000],
     description: 'Cloud infrastructure monitoring with AI-powered anomaly detection and cost optimization.',
-    website: 'https://cloudmetrics.example.com',
-    registeredAt: 1696435200,
+    website: 'https://cloudmetrics.example.com', registeredAt: 1696435200,
     owner: '0x2b3c4d5e6f7890abcdef1234567890abcdef1234',
-    burnRate: 35000,
-    runway: 24,
-    carbonOffset: 16,
-    revenueHistory: [
-      { month: 'Oct', value: 62000 }, { month: 'Nov', value: 68000 }, { month: 'Dec', value: 72000 },
-      { month: 'Jan', value: 78000 }, { month: 'Feb', value: 82000 }, { month: 'Mar', value: 89000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 5800 }, { month: 'Nov', value: 6200 }, { month: 'Dec', value: 6700 },
-      { month: 'Jan', value: 7200 }, { month: 'Feb', value: 7700 }, { month: 'Mar', value: 8200 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 5 }, { month: 'Nov', value: 7 }, { month: 'Dec', value: 9 },
-      { month: 'Jan', value: 11 }, { month: 'Feb', value: 14 }, { month: 'Mar', value: 16 },
-    ],
+    burnRate: 35000, runway: 24, carbonOffset: 16,
+    revenueHistory: makeRevHist([62000, 68000, 72000, 78000, 82000, 89000]),
+    userHistory: makeUserHist([5800, 6200, 6700, 7200, 7700, 8200]),
+    carbonHistory: makeRevHist([5, 7, 9, 11, 14, 16]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 62000, users: 5800, growth: 6.1, verified: true },
       { date: '2025-11-01', mrr: 68000, users: 6200, growth: 9.7, verified: true },
@@ -200,36 +176,42 @@ export const STARTUPS: StartupData[] = [
       tokenomicsHealth: { score: 19, concentration: 'Medium', inflation: '3%', vesting: '3yr cliff' },
       governancePledges: { score: 16, pledgesCount: 3, pledges: ['Green Hosting', 'Carbon Reporting', 'Open Source Commitment'] },
     },
+    extended: {
+      teamSize: 18, foundedDate: '2023-09-01', treasury: 1500000,
+      financials: makeFinancials([45000,48000,52000,55000,58000,60000,62000,68000,72000,78000,82000,89000], 35000),
+      fundingRounds: [
+        { round: 'Pre-Seed', amount: 300000, date: '2023-09', valuation: 2000000 },
+        { round: 'Seed', amount: 1800000, date: '2024-04', valuation: 8000000 },
+      ],
+      tokenDistribution: [
+        { label: 'Community', value: 30, color: '#10B981' }, { label: 'Team', value: 25, color: '#534AB7' },
+        { label: 'Investors', value: 20, color: '#3B82F6' }, { label: 'Treasury', value: 15, color: '#EAB308' },
+        { label: 'Liquidity', value: 10, color: '#F97316' },
+      ],
+      vestingSchedule: defaultVesting,
+      whaleConcentration: 41, inflationRate: 3.0,
+      sdgAlignment: [9, 12, 13],
+      energyConsumption: 95,
+      carbonOffsetHistory: makeCarbonHist([5, 7, 9, 11, 14, 16]),
+      pledges: [
+        { text: '100% renewable-powered hosting', dateCommitted: '2024-04-01', active: true },
+        { text: 'Publish quarterly carbon reports', dateCommitted: '2024-07-01', active: true },
+        { text: 'Open source core infrastructure', dateCommitted: '2024-10-01', active: true },
+      ],
+      platformAvgSustainability: 62,
+    },
   },
   {
-    id: 'defiyield',
-    name: 'DeFiYield',
-    category: 'DeFi',
-    verified: true,
-    trustScore: 78,
-    mrr: 210000,
-    users: 5100,
-    growth: 22.1,
+    id: 'defiyield', name: 'DeFiYield', category: 'DeFi', verified: true, trustScore: 78,
+    mrr: 210000, users: 5100, growth: 22.1,
     mrrHistory: [95000, 120000, 140000, 165000, 185000, 210000],
     description: 'Automated yield optimization across DeFi protocols with risk-adjusted strategies.',
-    website: 'https://defiyield.example.com',
-    registeredAt: 1697040000,
+    website: 'https://defiyield.example.com', registeredAt: 1697040000,
     owner: '0x3c4d5e6f7890abcdef1234567890abcdef123456',
-    burnRate: 80000,
-    runway: 12,
-    carbonOffset: 8,
-    revenueHistory: [
-      { month: 'Oct', value: 95000 }, { month: 'Nov', value: 120000 }, { month: 'Dec', value: 140000 },
-      { month: 'Jan', value: 165000 }, { month: 'Feb', value: 185000 }, { month: 'Mar', value: 210000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 2100 }, { month: 'Nov', value: 2800 }, { month: 'Dec', value: 3300 },
-      { month: 'Jan', value: 3900 }, { month: 'Feb', value: 4500 }, { month: 'Mar', value: 5100 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 2 }, { month: 'Nov', value: 3 }, { month: 'Dec', value: 4 },
-      { month: 'Jan', value: 5 }, { month: 'Feb', value: 6 }, { month: 'Mar', value: 8 },
-    ],
+    burnRate: 80000, runway: 12, carbonOffset: 8,
+    revenueHistory: makeRevHist([95000, 120000, 140000, 165000, 185000, 210000]),
+    userHistory: makeUserHist([2100, 2800, 3300, 3900, 4500, 5100]),
+    carbonHistory: makeRevHist([2, 3, 4, 5, 6, 8]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 95000, users: 2100, growth: 15.2, verified: true },
       { date: '2025-11-01', mrr: 120000, users: 2800, growth: 26.3, verified: true },
@@ -247,36 +229,44 @@ export const STARTUPS: StartupData[] = [
       tokenomicsHealth: { score: 10, concentration: 'High', inflation: '8%', vesting: '1yr cliff' },
       governancePledges: { score: 10, pledgesCount: 2, pledges: ['Carbon Reporting', 'DAO Governance'] },
     },
+    extended: {
+      teamSize: 12, foundedDate: '2023-10-20', treasury: 4200000,
+      financials: makeFinancials([50000,60000,72000,85000,95000,105000,120000,140000,155000,170000,190000,210000], 80000),
+      fundingRounds: [
+        { round: 'Seed', amount: 3000000, date: '2023-11', valuation: 15000000 },
+        { round: 'Series A', amount: 12000000, date: '2025-01', valuation: 60000000 },
+      ],
+      tokenDistribution: [
+        { label: 'Community', value: 25, color: '#10B981' }, { label: 'Team', value: 22, color: '#534AB7' },
+        { label: 'Investors', value: 28, color: '#3B82F6' }, { label: 'Treasury', value: 15, color: '#EAB308' },
+        { label: 'Liquidity', value: 10, color: '#F97316' },
+      ],
+      vestingSchedule: [
+        { period: 'Month 0', unlocked: 20 }, { period: 'Month 3', unlocked: 35 },
+        { period: 'Month 6', unlocked: 50 }, { period: 'Year 1', unlocked: 100 },
+      ],
+      whaleConcentration: 58, inflationRate: 8.0,
+      sdgAlignment: [9, 13],
+      energyConsumption: 340,
+      carbonOffsetHistory: makeCarbonHist([2, 3, 4, 5, 6, 8]),
+      pledges: [
+        { text: 'Publish quarterly carbon reports', dateCommitted: '2024-08-01', active: true },
+        { text: 'Transition to DAO governance', dateCommitted: '2025-01-01', active: true },
+      ],
+      platformAvgSustainability: 62,
+    },
   },
   {
-    id: 'greenchain',
-    name: 'GreenChain',
-    category: 'Cleantech',
-    verified: true,
-    trustScore: 95,
-    mrr: 45000,
-    users: 3200,
-    growth: 15.7,
+    id: 'greenchain', name: 'GreenChain', category: 'Cleantech', verified: true, trustScore: 95,
+    mrr: 45000, users: 3200, growth: 15.7,
     mrrHistory: [22000, 27000, 31000, 36000, 40000, 45000],
     description: 'Blockchain-verified carbon credit marketplace connecting offset projects with enterprises.',
-    website: 'https://greenchain.example.com',
-    registeredAt: 1697644800,
+    website: 'https://greenchain.example.com', registeredAt: 1697644800,
     owner: '0x4d5e6f7890abcdef1234567890abcdef12345678',
-    burnRate: 20000,
-    runway: 36,
-    carbonOffset: 480,
-    revenueHistory: [
-      { month: 'Oct', value: 22000 }, { month: 'Nov', value: 27000 }, { month: 'Dec', value: 31000 },
-      { month: 'Jan', value: 36000 }, { month: 'Feb', value: 40000 }, { month: 'Mar', value: 45000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 1400 }, { month: 'Nov', value: 1800 }, { month: 'Dec', value: 2100 },
-      { month: 'Jan', value: 2500 }, { month: 'Feb', value: 2900 }, { month: 'Mar', value: 3200 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 120 }, { month: 'Nov', value: 185 }, { month: 'Dec', value: 245 },
-      { month: 'Jan', value: 310 }, { month: 'Feb', value: 390 }, { month: 'Mar', value: 480 },
-    ],
+    burnRate: 20000, runway: 36, carbonOffset: 480,
+    revenueHistory: makeRevHist([22000, 27000, 31000, 36000, 40000, 45000]),
+    userHistory: makeUserHist([1400, 1800, 2100, 2500, 2900, 3200]),
+    carbonHistory: makeRevHist([120, 185, 245, 310, 390, 480]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 22000, users: 1400, growth: 10.0, verified: true },
       { date: '2025-11-01', mrr: 27000, users: 1800, growth: 22.7, verified: true },
@@ -294,36 +284,49 @@ export const STARTUPS: StartupData[] = [
       tokenomicsHealth: { score: 22, concentration: 'Low', inflation: '1.5%', vesting: '5yr linear' },
       governancePledges: { score: 24, pledgesCount: 6, pledges: ['Net Zero 2025', 'Green Hosting', 'Carbon Reporting', 'Renewable Energy', 'Fair Token Distribution', 'Community Treasury'] },
     },
+    extended: {
+      teamSize: 15, foundedDate: '2023-08-10', treasury: 1200000,
+      financials: makeFinancials([12000,15000,18000,20000,22000,24000,27000,31000,34000,38000,42000,45000], 20000),
+      fundingRounds: [
+        { round: 'Pre-Seed', amount: 250000, date: '2023-08', valuation: 1500000 },
+        { round: 'Seed', amount: 1500000, date: '2024-02', valuation: 7000000 },
+      ],
+      tokenDistribution: [
+        { label: 'Community', value: 40, color: '#10B981' }, { label: 'Team', value: 15, color: '#534AB7' },
+        { label: 'Investors', value: 15, color: '#3B82F6' }, { label: 'Treasury', value: 20, color: '#EAB308' },
+        { label: 'Liquidity', value: 10, color: '#F97316' },
+      ],
+      vestingSchedule: [
+        { period: 'Month 0', unlocked: 5 }, { period: 'Year 1', unlocked: 15 },
+        { period: 'Year 2', unlocked: 35 }, { period: 'Year 3', unlocked: 55 },
+        { period: 'Year 4', unlocked: 80 }, { period: 'Year 5', unlocked: 100 },
+      ],
+      whaleConcentration: 18, inflationRate: 1.5,
+      sdgAlignment: [7, 9, 11, 12, 13, 15],
+      energyConsumption: 45,
+      carbonOffsetHistory: makeCarbonHist([120, 185, 245, 310, 390, 480]),
+      pledges: [
+        { text: 'Achieve Net Zero by 2025', dateCommitted: '2023-09-01', active: true },
+        { text: '100% renewable-powered hosting', dateCommitted: '2023-10-01', active: true },
+        { text: 'Publish quarterly carbon reports', dateCommitted: '2023-12-01', active: true },
+        { text: '100% renewable energy sourcing', dateCommitted: '2024-01-15', active: true },
+        { text: 'Fair token distribution (no >15% single holder)', dateCommitted: '2024-03-01', active: true },
+        { text: 'Community-controlled treasury', dateCommitted: '2024-06-01', active: true },
+      ],
+      platformAvgSustainability: 62,
+    },
   },
   {
-    id: 'datavault',
-    name: 'DataVault',
-    category: 'SaaS',
-    verified: false,
-    trustScore: 65,
-    mrr: 67000,
-    users: 12000,
-    growth: 5.2,
+    id: 'datavault', name: 'DataVault', category: 'SaaS', verified: false, trustScore: 65,
+    mrr: 67000, users: 12000, growth: 5.2,
     mrrHistory: [52000, 55000, 58000, 61000, 64000, 67000],
     description: 'Encrypted data storage and sharing platform with zero-knowledge proof verification.',
-    website: 'https://datavault.example.com',
-    registeredAt: 1698249600,
+    website: 'https://datavault.example.com', registeredAt: 1698249600,
     owner: '0x5e6f7890abcdef1234567890abcdef1234567890',
-    burnRate: 55000,
-    runway: 8,
-    carbonOffset: 13,
-    revenueHistory: [
-      { month: 'Oct', value: 52000 }, { month: 'Nov', value: 55000 }, { month: 'Dec', value: 58000 },
-      { month: 'Jan', value: 61000 }, { month: 'Feb', value: 64000 }, { month: 'Mar', value: 67000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 9500 }, { month: 'Nov', value: 10100 }, { month: 'Dec', value: 10600 },
-      { month: 'Jan', value: 11000 }, { month: 'Feb', value: 11500 }, { month: 'Mar', value: 12000 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 8 }, { month: 'Nov', value: 9 }, { month: 'Dec', value: 10 },
-      { month: 'Jan', value: 11 }, { month: 'Feb', value: 12 }, { month: 'Mar', value: 13 },
-    ],
+    burnRate: 55000, runway: 8, carbonOffset: 13,
+    revenueHistory: makeRevHist([52000, 55000, 58000, 61000, 64000, 67000]),
+    userHistory: makeUserHist([9500, 10100, 10600, 11000, 11500, 12000]),
+    carbonHistory: makeRevHist([8, 9, 10, 11, 12, 13]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 52000, users: 9500, growth: 4.0, verified: false },
       { date: '2025-11-01', mrr: 55000, users: 10100, growth: 5.8, verified: false },
@@ -341,36 +344,40 @@ export const STARTUPS: StartupData[] = [
       tokenomicsHealth: { score: 13, concentration: 'Medium', inflation: '5%', vesting: '2yr cliff' },
       governancePledges: { score: 9, pledgesCount: 2, pledges: ['Carbon Reporting', 'Open Source Commitment'] },
     },
+    extended: {
+      teamSize: 22, foundedDate: '2023-07-20', treasury: 900000,
+      financials: makeFinancials([38000,40000,42000,45000,48000,50000,52000,55000,58000,61000,64000,67000], 55000),
+      fundingRounds: [
+        { round: 'Pre-Seed', amount: 400000, date: '2023-07', valuation: 2500000 },
+        { round: 'Seed', amount: 2000000, date: '2024-03', valuation: 10000000 },
+      ],
+      tokenDistribution: defaultTokenDist,
+      vestingSchedule: [
+        { period: 'Month 0', unlocked: 15 }, { period: 'Month 6', unlocked: 25 },
+        { period: 'Year 1', unlocked: 50 }, { period: 'Year 2', unlocked: 100 },
+      ],
+      whaleConcentration: 44, inflationRate: 5.0,
+      sdgAlignment: [9, 12],
+      energyConsumption: 180,
+      carbonOffsetHistory: makeCarbonHist([8, 9, 10, 11, 12, 13]),
+      pledges: [
+        { text: 'Publish quarterly carbon reports', dateCommitted: '2024-05-01', active: true },
+        { text: 'Open source core infrastructure', dateCommitted: '2024-08-01', active: true },
+      ],
+      platformAvgSustainability: 62,
+    },
   },
   {
-    id: 'tokenbridge',
-    name: 'TokenBridge',
-    category: 'DeFi',
-    verified: false,
-    trustScore: 43,
-    mrr: 156000,
-    users: 9800,
-    growth: -3.4,
+    id: 'tokenbridge', name: 'TokenBridge', category: 'DeFi', verified: false, trustScore: 43,
+    mrr: 156000, users: 9800, growth: -3.4,
     mrrHistory: [180000, 175000, 170000, 165000, 160000, 156000],
     description: 'Cross-chain bridge protocol enabling seamless token transfers between L1 and L2 networks.',
-    website: 'https://tokenbridge.example.com',
-    registeredAt: 1698854400,
+    website: 'https://tokenbridge.example.com', registeredAt: 1698854400,
     owner: '0x6f7890abcdef1234567890abcdef123456789012',
-    burnRate: 120000,
-    runway: 6,
-    carbonOffset: 5,
-    revenueHistory: [
-      { month: 'Oct', value: 180000 }, { month: 'Nov', value: 175000 }, { month: 'Dec', value: 170000 },
-      { month: 'Jan', value: 165000 }, { month: 'Feb', value: 160000 }, { month: 'Mar', value: 156000 },
-    ],
-    userHistory: [
-      { month: 'Oct', value: 11200 }, { month: 'Nov', value: 10900 }, { month: 'Dec', value: 10600 },
-      { month: 'Jan', value: 10300 }, { month: 'Feb', value: 10000 }, { month: 'Mar', value: 9800 },
-    ],
-    carbonHistory: [
-      { month: 'Oct', value: 3 }, { month: 'Nov', value: 3 }, { month: 'Dec', value: 4 },
-      { month: 'Jan', value: 4 }, { month: 'Feb', value: 5 }, { month: 'Mar', value: 5 },
-    ],
+    burnRate: 120000, runway: 6, carbonOffset: 5,
+    revenueHistory: makeRevHist([180000, 175000, 170000, 165000, 160000, 156000]),
+    userHistory: makeUserHist([11200, 10900, 10600, 10300, 10000, 9800]),
+    carbonHistory: makeRevHist([3, 3, 4, 4, 5, 5]),
     metricsHistory: [
       { date: '2025-10-01', mrr: 180000, users: 11200, growth: -1.5, verified: false },
       { date: '2025-11-01', mrr: 175000, users: 10900, growth: -2.8, verified: false },
@@ -387,6 +394,30 @@ export const STARTUPS: StartupData[] = [
       carbonOffset: { score: 3, purchased: false, tons: 5 },
       tokenomicsHealth: { score: 2, concentration: 'Very High', inflation: '12%', vesting: 'No vesting' },
       governancePledges: { score: 2, pledgesCount: 1, pledges: ['DAO Governance'] },
+    },
+    extended: {
+      teamSize: 8, foundedDate: '2023-11-01', treasury: 7500000,
+      financials: makeFinancials([200000,195000,192000,188000,185000,183000,180000,175000,170000,165000,160000,156000], 120000),
+      fundingRounds: [
+        { round: 'Seed', amount: 5000000, date: '2023-12', valuation: 25000000 },
+      ],
+      tokenDistribution: [
+        { label: 'Community', value: 15, color: '#10B981' }, { label: 'Team', value: 30, color: '#534AB7' },
+        { label: 'Investors', value: 35, color: '#3B82F6' }, { label: 'Treasury', value: 12, color: '#EAB308' },
+        { label: 'Liquidity', value: 8, color: '#F97316' },
+      ],
+      vestingSchedule: [
+        { period: 'Month 0', unlocked: 40 }, { period: 'Month 3', unlocked: 60 },
+        { period: 'Month 6', unlocked: 80 }, { period: 'Year 1', unlocked: 100 },
+      ],
+      whaleConcentration: 72, inflationRate: 12.0,
+      sdgAlignment: [9],
+      energyConsumption: 890,
+      carbonOffsetHistory: makeCarbonHist([3, 3, 4, 4, 5, 5]),
+      pledges: [
+        { text: 'Transition to DAO governance', dateCommitted: '2025-02-01', active: true },
+      ],
+      platformAvgSustainability: 62,
     },
   },
 ];
