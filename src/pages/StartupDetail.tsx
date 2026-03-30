@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
+import { useStartup, useMetricsHistory, useStartupPledges, useStartups, useAuditLog } from '@/hooks/use-startups';
 import type { SustainabilityData } from '@/components/SustainabilityScore';
 import type { DbStartup, DbMetricsHistory } from '@/hooks/use-startups';
 
