@@ -220,6 +220,11 @@ export default function StartupDetail() {
         ))}
       </div>
 
+      {/* Sustainability Score */}
+      <div className="mt-8">
+        <SustainabilityScore data={startup.sustainability} />
+      </div>
+
       {/* Metrics History */}
       <div className="mt-8">
         <h3 className="mb-4 font-bold">Metrics History</h3>
