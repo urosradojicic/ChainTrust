@@ -75,7 +75,18 @@ export default function Navbar() {
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-              <span className="relative z-10">{link.label}</span>
+              <span className="relative z-10 flex items-center gap-1.5">
+                {link.label}
+                {(link as any).live && (
+                  <span className="flex items-center gap-1">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400">Live</span>
+                  </span>
+                )}
+              </span>
             </Link>
           ))}
         </div>
