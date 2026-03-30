@@ -72,7 +72,8 @@ function SimulatedTerminal({ lines, speed = 60 }: { lines: string[]; speed?: num
     let i = 0;
     const interval = setInterval(() => {
       if (i < lines.length) {
-        setVisibleLines(prev => [...prev, lines[i]]);
+        const line = lines[i];
+        setVisibleLines(prev => [...prev, line]);
         i++;
       } else {
         clearInterval(interval);
@@ -89,6 +90,7 @@ function SimulatedTerminal({ lines, speed = 60 }: { lines: string[]; speed?: num
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           className={`py-0.5 ${
+            !line ? 'text-gray-400' :
             line.startsWith('✓') ? 'text-emerald-400' :
             line.startsWith('⏳') || line.startsWith('→') ? 'text-yellow-400' :
             line.startsWith('⚡') ? 'text-purple-400' :
