@@ -1,3 +1,5 @@
+import type { SustainabilityData } from '@/components/SustainabilityScore';
+
 export interface StartupData {
   id: string;
   name: string;
@@ -27,6 +29,7 @@ export interface StartupData {
   }[];
   txHash: string;
   blockNumber: number;
+  sustainability: SustainabilityData;
 }
 
 export const STARTUPS: StartupData[] = [
