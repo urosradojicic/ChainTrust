@@ -116,9 +116,46 @@ export const STARTUPS: StartupData[] = [
       tokenomicsHealth: { score: 21, concentration: 'Low', inflation: '2%', vesting: '4yr linear' },
       governancePledges: { score: 18, pledgesCount: 4, pledges: ['Net Zero 2027', 'Green Hosting', 'Carbon Reporting', 'Fair Token Distribution'] },
     },
+    extended: {
+      teamSize: 24, foundedDate: '2023-06-15', treasury: 2800000,
+      financials: [
+        { month: 'Apr', revenue: 65000, costs: 42000, profit: 23000 }, { month: 'May', revenue: 70000, costs: 43000, profit: 27000 },
+        { month: 'Jun', revenue: 72000, costs: 44000, profit: 28000 }, { month: 'Jul', revenue: 75000, costs: 44500, profit: 30500 },
+        { month: 'Aug', revenue: 78000, costs: 45000, profit: 33000 }, { month: 'Sep', revenue: 80000, costs: 45000, profit: 35000 },
+        { month: 'Oct', revenue: 85000, costs: 45000, profit: 40000 }, { month: 'Nov', revenue: 92000, costs: 45000, profit: 47000 },
+        { month: 'Dec', revenue: 98000, costs: 45000, profit: 53000 }, { month: 'Jan', revenue: 108000, costs: 45000, profit: 63000 },
+        { month: 'Feb', revenue: 118000, costs: 45000, profit: 73000 }, { month: 'Mar', revenue: 125000, costs: 45000, profit: 80000 },
+      ],
+      fundingRounds: [
+        { round: 'Pre-Seed', amount: 500000, date: '2023-06', valuation: 3000000 },
+        { round: 'Seed', amount: 2500000, date: '2024-01', valuation: 12000000 },
+        { round: 'Series A', amount: 8000000, date: '2025-03', valuation: 45000000 },
+      ],
+      tokenDistribution: [
+        { label: 'Community', value: 35, color: '#10B981' }, { label: 'Team', value: 20, color: '#534AB7' },
+        { label: 'Investors', value: 18, color: '#3B82F6' }, { label: 'Treasury', value: 15, color: '#EAB308' },
+        { label: 'Liquidity', value: 12, color: '#F97316' },
+      ],
+      vestingSchedule: [
+        { period: 'Month 0', unlocked: 10 }, { period: 'Month 6', unlocked: 15 }, { period: 'Year 1', unlocked: 25 },
+        { period: 'Year 2', unlocked: 50 }, { period: 'Year 3', unlocked: 75 }, { period: 'Year 4', unlocked: 100 },
+      ],
+      whaleConcentration: 32, inflationRate: 2.0,
+      sdgAlignment: [7, 9, 11, 13],
+      energyConsumption: 120,
+      carbonOffsetHistory: [
+        { month: 'Oct', tons: 12 }, { month: 'Nov', tons: 15 }, { month: 'Dec', tons: 18 },
+        { month: 'Jan', tons: 22 }, { month: 'Feb', tons: 28 }, { month: 'Mar', tons: 34 },
+      ],
+      pledges: [
+        { text: 'Achieve Net Zero emissions by 2027', dateCommitted: '2024-01-15', active: true },
+        { text: '100% renewable-powered hosting', dateCommitted: '2024-03-01', active: true },
+        { text: 'Publish quarterly carbon reports', dateCommitted: '2024-06-01', active: true },
+        { text: 'Fair token distribution (no >20% single holder)', dateCommitted: '2024-09-01', active: true },
+      ],
+      platformAvgSustainability: 62,
+    },
   },
-  {
-    id: 'cloudmetrics',
     name: 'CloudMetrics',
     category: 'SaaS',
     verified: true,
