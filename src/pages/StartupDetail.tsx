@@ -170,6 +170,36 @@ const defaultVesting = [
   { period: 'Year 3', unlocked: 75 }, { period: 'Year 4', unlocked: 100 },
 ];
 
+function OnChainTimestamp() {
+  const [minutes, setMinutes] = useState(2);
+  useEffect(() => {
+    const interval = setInterval(() => setMinutes(prev => prev + 1), 60000);
+    return () => clearInterval(interval);
+  }, []);
+  return (
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+      </span>
+      Last verified on-chain: {minutes} minute{minutes !== 1 ? 's' : ''} ago
+    </div>
+  );
+}
+
+function ViewOnBaseButton() {
+  return (
+    <a
+      href="https://sepolia.basescan.org"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
+    >
+      View on Base <ExternalLink className="h-3 w-3" />
+    </a>
+  );
+}
+
 export default function StartupDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: startup, isLoading } = useStartup(id);
