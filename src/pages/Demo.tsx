@@ -72,7 +72,8 @@ function SimulatedTerminal({ lines, speed = 60 }: { lines: string[]; speed?: num
     let i = 0;
     const interval = setInterval(() => {
       if (i < lines.length) {
-        setVisibleLines(prev => [...prev, lines[i]]);
+        const line = lines[i];
+        setVisibleLines(prev => [...prev, line]);
         i++;
       } else {
         clearInterval(interval);
