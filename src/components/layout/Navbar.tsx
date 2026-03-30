@@ -9,6 +9,7 @@ import { LogIn, LogOut, User } from 'lucide-react';
 const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/leaderboard', label: 'Leaderboard' },
+  { path: '/compare', label: 'Compare' },
   { path: '/staking', label: 'Staking' },
   { path: '/governance', label: 'Governance' },
   { path: '/demo', label: 'Demo' },

@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import StartupDetail from "./pages/StartupDetail";
 import Register from "./pages/Register";
 import Leaderboard from "./pages/Leaderboard";
+import Compare from "./pages/Compare";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
@@ -29,6 +30,7 @@ const AnimatedRoutes = () => {
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/leaderboard" element={<PageTransition><Leaderboard /></PageTransition>} />
+        <Route path="/compare" element={<PageTransition><Compare /></PageTransition>} />
         <Route path="/startup/:id" element={<PageTransition><StartupDetail /></PageTransition>} />
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/staking" element={<PageTransition><Staking /></PageTransition>} />
