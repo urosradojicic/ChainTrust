@@ -168,3 +168,21 @@ export function useProposals() {
     },
   });
 }
+
+export function useAuditLog(startupId: string | undefined) {
+  return useQuery({
+    queryKey: ['audit_log', startupId],
+    queryFn: async () => {
+      if (!startupId) return [];
+      const { data, error } = await supabase
+        .from('startup_audit_log')
+        .select('*')
+        .eq('startup_id', startupId)
+        .order('changed_at', { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data as DbAuditEntry[];
+    },
+    enabled: !!startupId,
+  });
+}
