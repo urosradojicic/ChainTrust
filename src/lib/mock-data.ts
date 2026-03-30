@@ -213,6 +213,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5',
     blockNumber: 14524200,
+    sustainability: {
+      overall: 96,
+      energyEfficiency: { score: 25, chain: 'Base (PoS)', energyPerTx: '0.0005 kWh' },
+      carbonOffset: { score: 25, purchased: true, tons: 480 },
+      tokenomicsHealth: { score: 22, concentration: 'Low', inflation: '1.5%', vesting: '5yr linear' },
+      governancePledges: { score: 24, pledgesCount: 6, pledges: ['Net Zero 2025', 'Green Hosting', 'Carbon Reporting', 'Renewable Energy', 'Fair Token Distribution', 'Community Treasury'] },
+    },
   },
   {
     id: 'datavault',
