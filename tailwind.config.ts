@@ -12,7 +12,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"EB Garamond"', 'Baskerville', 'Didot', '"Palatino Linotype"', 'Georgia', 'serif'],
         mono: ['"DM Mono"', 'ui-monospace', 'monospace'],
       },
       colors: {
