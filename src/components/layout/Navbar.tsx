@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { LogIn, LogOut, User } from 'lucide-react';
 
 const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard' },
@@ -11,6 +14,8 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -41,6 +46,21 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          {user ? (
+            <div className="hidden items-center gap-2 sm:flex">
+              <span className="flex items-center gap-1 rounded-lg bg-muted px-3 py-1.5 text-xs font-medium">
+                <User className="h-3.5 w-3.5" />
+                {role ?? '...'}
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate('/'); }}>
+                <LogOut className="h-4 w-4 mr-1" /> Sign Out
+              </Button>
+            </div>
+          ) : (
+            <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => navigate('/login')}>
+              <LogIn className="h-4 w-4 mr-1" /> Sign In
+            </Button>
+          )}
           <div className="hidden sm:block">
             <ConnectButton
               showBalance={false}
