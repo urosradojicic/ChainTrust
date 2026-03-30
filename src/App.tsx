@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import StartupDetail from "./pages/StartupDetail";
 import Register from "./pages/Register";
 import Leaderboard from "./pages/Leaderboard";
+import Compare from "./pages/Compare";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
