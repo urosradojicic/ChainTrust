@@ -21,9 +21,9 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-lg">
+    <nav className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="text-xl font-bold gradient-text">
+        <Link to="/" className="text-xl font-bold text-primary">
           ChainMetrics
         </Link>
 
@@ -50,16 +50,16 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <div className="hidden items-center gap-2 sm:flex">
-              <span className="flex items-center gap-1 rounded-lg bg-muted px-3 py-1.5 text-xs font-medium">
+              <span className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">
                 <User className="h-3.5 w-3.5" />
                 {role ?? '...'}
               </span>
-              <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate('/'); }}>
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => { signOut(); navigate('/'); }}>
                 <LogOut className="h-4 w-4 mr-1" /> Sign Out
               </Button>
             </div>
           ) : (
-            <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => navigate('/login')}>
+            <Button variant="outline" size="sm" className="hidden sm:flex border-border text-foreground" onClick={() => navigate('/login')}>
               <LogIn className="h-4 w-4 mr-1" /> Sign In
             </Button>
           )}
@@ -71,7 +71,7 @@ export default function Navbar() {
             />
           </div>
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-muted md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -91,7 +91,7 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t md:hidden"
+            className="overflow-hidden border-t border-white/10 md:hidden"
           >
             <div className="flex flex-col gap-1 px-4 py-3">
               {NAV_LINKS.map((link) => (
@@ -102,7 +102,7 @@ export default function Navbar() {
                   className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
                     location.pathname === link.path
                       ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:bg-muted'
+                      : 'text-muted-foreground hover:bg-secondary'
                   }`}
                 >
                   {link.label}
