@@ -46,6 +46,21 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          {user ? (
+            <div className="hidden items-center gap-2 sm:flex">
+              <span className="flex items-center gap-1 rounded-lg bg-muted px-3 py-1.5 text-xs font-medium">
+                <User className="h-3.5 w-3.5" />
+                {role ?? '...'}
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate('/'); }}>
+                <LogOut className="h-4 w-4 mr-1" /> Sign Out
+              </Button>
+            </div>
+          ) : (
+            <Button variant="outline" size="sm" className="hidden sm:flex" onClick={() => navigate('/login')}>
+              <LogIn className="h-4 w-4 mr-1" /> Sign In
+            </Button>
+          )}
           <div className="hidden sm:block">
             <ConnectButton
               showBalance={false}
