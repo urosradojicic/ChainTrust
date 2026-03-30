@@ -541,6 +541,11 @@ export default function StartupDetail() {
             <p className="text-center text-muted-foreground py-8">No pledges yet.</p>
           )}
         </TabsContent>
+
+        {/* Audit Trail */}
+        <TabsContent value="audit" className="mt-6">
+          <AuditTrailTab startupId={startup.id} />
+        </TabsContent>
       </Tabs>
     </div>
   );
