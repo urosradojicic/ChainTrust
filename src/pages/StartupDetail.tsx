@@ -11,9 +11,10 @@ import Badge from '@/components/common/Badge';
 import SustainabilityScore from '@/components/SustainabilityScore';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
-  Globe, TrendingUp, Wallet, Zap, Coins, Vote, ChevronLeft,
+  Globe, TrendingUp, Wallet, Zap, Coins, Vote, ChevronLeft, Info,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const categoryColors: Record<string, 'info' | 'primary' | 'warning' | 'success'> = {
   Fintech: 'info', SaaS: 'primary', DeFi: 'warning', Cleantech: 'success',
