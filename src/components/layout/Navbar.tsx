@@ -16,6 +16,8 @@ const NAV_LINKS = [
   { path: '/demo', label: 'Demo' },
 ];
 
+const STARTUP_NAV = { path: '/my-startup', label: 'My Startup' };
+
 function ThemeToggle() {
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
 
@@ -56,10 +58,13 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
 
-  // Build nav links dynamically — show Portfolio if wallet connected
-  const links = connected
-    ? [...NAV_LINKS.slice(0, 1), { path: '/portfolio', label: 'My Portfolio' }, ...NAV_LINKS.slice(1)]
-    : NAV_LINKS;
+  // Build nav links dynamically
+  const links = [
+    ...NAV_LINKS.slice(0, 1),
+    ...(connected ? [{ path: '/portfolio', label: 'My Portfolio' }] : []),
+    ...(role === 'startup' ? [STARTUP_NAV] : []),
+    ...NAV_LINKS.slice(1),
+  ];
 
   return (
     <>

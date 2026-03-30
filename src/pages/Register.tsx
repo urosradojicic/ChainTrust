@@ -112,8 +112,10 @@ export default function Register() {
       const governanceScore = Math.min(25, pledgeCount * 5);
       const sustainabilityScore = energyScore + carbonScore + tokenomicsScore + governanceScore;
 
+      const currentUser = (await supabase.auth.getUser()).data.user;
       const { data, error } = await supabase.from('startups').insert({
         name: form.name.trim().slice(0, 100),
+        user_id: currentUser?.id ?? null,
         description: form.description.trim().slice(0, 500),
         category: form.category,
         blockchain: form.blockchain,

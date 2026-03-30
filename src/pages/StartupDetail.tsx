@@ -11,11 +11,11 @@ import Badge from '@/components/common/Badge';
 import SustainabilityScore from '@/components/SustainabilityScore';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
-  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2,
+  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { useStartup, useMetricsHistory, useStartupPledges, useStartups } from '@/hooks/use-startups';
+import { useStartup, useMetricsHistory, useStartupPledges, useStartups, useAuditLog } from '@/hooks/use-startups';
 import type { SustainabilityData } from '@/components/SustainabilityScore';
 import type { DbStartup, DbMetricsHistory } from '@/hooks/use-startups';
 
@@ -200,6 +200,36 @@ function ViewOnBaseButton() {
     </a>
   );
 }
+function AuditTrailTab({ startupId }: { startupId: string }) {
+  const { data: entries = [], isLoading } = useAuditLog(startupId);
+  if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  if (entries.length === 0) return <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground"><History className="mx-auto h-8 w-8 mb-2 opacity-50" /><p>No on-chain changes recorded yet.</p></div>;
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="border-b border-border bg-muted/30">
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Field</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Old</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">New</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Tx Hash</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">Date</th>
+          </tr></thead>
+          <tbody>{entries.map(e => (
+            <tr key={e.id} className="border-b border-border/50 hover:bg-muted/20">
+              <td className="px-4 py-3 font-medium capitalize">{e.field_changed.replace(/_/g, ' ')}</td>
+              <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[120px] truncate">{e.old_value || '—'}</td>
+              <td className="px-4 py-3 font-mono text-xs max-w-[120px] truncate">{e.new_value || '—'}</td>
+              <td className="px-4 py-3"><a href={`https://sepolia.basescan.org/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
+              <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(e.changed_at).toLocaleDateString()}</td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 
 export default function StartupDetail() {
   const { id } = useParams<{ id: string }>();
@@ -295,6 +325,7 @@ export default function StartupDetail() {
           <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
           <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
           <TabsTrigger value="pledges">Pledges</TabsTrigger>
+          <TabsTrigger value="audit">Audit Trail</TabsTrigger>
         </TabsList>
 
         {/* Overview */}
@@ -539,6 +570,11 @@ export default function StartupDetail() {
           {pledges.length === 0 && (
             <p className="text-center text-muted-foreground py-8">No pledges yet.</p>
           )}
+        </TabsContent>
+
+        {/* Audit Trail */}
+        <TabsContent value="audit" className="mt-6">
+          <AuditTrailTab startupId={startup.id} />
         </TabsContent>
       </Tabs>
     </div>

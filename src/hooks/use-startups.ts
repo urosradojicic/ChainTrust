@@ -53,8 +53,18 @@ export interface DbPledge {
   status: string;
 }
 
-export interface DbProposal {
+export interface DbAuditEntry {
   id: string;
+  startup_id: string;
+  user_id: string;
+  field_changed: string;
+  old_value: string | null;
+  new_value: string | null;
+  tx_hash: string;
+  changed_at: string;
+}
+
+export interface DbProposal {
   title: string;
   description: string | null;
   proposer: string;
@@ -155,5 +165,23 @@ export function useProposals() {
       if (error) throw error;
       return data as DbProposal[];
     },
+  });
+}
+
+export function useAuditLog(startupId: string | undefined) {
+  return useQuery({
+    queryKey: ['audit_log', startupId],
+    queryFn: async () => {
+      if (!startupId) return [];
+      const { data, error } = await supabase
+        .from('startup_audit_log')
+        .select('*')
+        .eq('startup_id', startupId)
+        .order('changed_at', { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data as DbAuditEntry[];
+    },
+    enabled: !!startupId,
   });
 }

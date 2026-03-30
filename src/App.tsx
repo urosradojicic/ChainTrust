@@ -20,6 +20,7 @@ import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
 import Portfolio from "./pages/Portfolio";
+import MyStartup from "./pages/MyStartup";
 import NotFound from "./pages/NotFound";
 
 const AnimatedRoutes = () => {
@@ -38,6 +39,7 @@ const AnimatedRoutes = () => {
         <Route path="/staking" element={<PageTransition><Staking /></PageTransition>} />
         <Route path="/governance" element={<PageTransition><Governance /></PageTransition>} />
         <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
+        <Route path="/my-startup" element={<PageTransition><MyStartup /></PageTransition>} />
         <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
