@@ -136,6 +136,7 @@ export default function StartupDetail() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>
           <TabsTrigger value="sustainability">Sustainability</TabsTrigger>
+          <TabsTrigger value="impact-pl">Impact P&L</TabsTrigger>
           <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
           <TabsTrigger value="pledges">Pledges</TabsTrigger>
         </TabsList>
