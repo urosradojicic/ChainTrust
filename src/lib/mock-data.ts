@@ -72,6 +72,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xa1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2',
     blockNumber: 14523891,
+    sustainability: {
+      overall: 82,
+      energyEfficiency: { score: 23, chain: 'Base (PoS)', energyPerTx: '0.001 kWh' },
+      carbonOffset: { score: 20, purchased: true, tons: 34 },
+      tokenomicsHealth: { score: 21, concentration: 'Low', inflation: '2%', vesting: '4yr linear' },
+      governancePledges: { score: 18, pledgesCount: 4, pledges: ['Net Zero 2027', 'Green Hosting', 'Carbon Reporting', 'Fair Token Distribution'] },
+    },
   },
   {
     id: 'cloudmetrics',
