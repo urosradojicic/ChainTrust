@@ -15,6 +15,7 @@ import StartupDetail from "./pages/StartupDetail";
 import Register from "./pages/Register";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 
 const AnimatedRoutes = () => {
