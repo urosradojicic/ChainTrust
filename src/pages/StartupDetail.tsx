@@ -11,7 +11,7 @@ import Badge from '@/components/common/Badge';
 import SustainabilityScore from '@/components/SustainabilityScore';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
-  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2,
+  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
