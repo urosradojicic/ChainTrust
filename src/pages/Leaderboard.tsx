@@ -1,0 +1,203 @@
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Trophy, TrendingUp, TrendingDown, Minus, Search, Leaf, Shield, BarChart3 } from 'lucide-react';
+import { STARTUPS, CATEGORIES } from '@/lib/mock-data';
+import { formatCurrency } from '@/lib/format';
+import { Input } from '@/components/ui/input';
+import {
+  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
+} from '@/components/ui/select';
+import {
+  Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
+} from '@/components/ui/table';
+
+const BLOCKCHAINS = ['All', ...Array.from(new Set(STARTUPS.map(() => 'Base Sepolia')))];
+
+function scoreColor(s: number) {
+  if (s >= 75) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+  if (s >= 50) return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+  return 'bg-red-500/20 text-red-400 border-red-500/30';
+}
+
+function trendIcon(growth: number) {
+  if (growth > 2) return <TrendingUp className="h-4 w-4 text-emerald-400" />;
+  if (growth < -2) return <TrendingDown className="h-4 w-4 text-red-400" />;
+  return <Minus className="h-4 w-4 text-muted-foreground" />;
+}
+
+const podiumStyles: Record<number, string> = {
+  0: 'bg-yellow-500/10 border-l-4 border-l-yellow-400',
+  1: 'bg-gray-400/10 border-l-4 border-l-gray-400',
+  2: 'bg-amber-700/10 border-l-4 border-l-amber-600',
+};
+
+const podiumIcons: Record<number, string> = {
+  0: 'text-yellow-400',
+  1: 'text-gray-400',
+  2: 'text-amber-600',
+};
+
+export default function Leaderboard() {
+  const [search, setSearch] = useState('');
+  const [catFilter, setCatFilter] = useState('All');
+  const [chainFilter, setChainFilter] = useState('All');
+
+  const ranked = useMemo(() => {
+    let list = [...STARTUPS];
+    if (catFilter !== 'All') list = list.filter(s => s.category === catFilter);
+    if (search.trim()) list = list.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+    list.sort((a, b) => b.sustainability.overall - a.sustainability.overall);
+    return list;
+  }, [search, catFilter, chainFilter]);
+
+  const totalCarbonOffset = STARTUPS.reduce((sum, s) => sum + s.carbonOffset, 0);
+  const greenPledged = STARTUPS.filter(s => s.extended.pledges.filter(p => p.active).length >= 3).length;
+  const avgScore = Math.round(STARTUPS.reduce((sum, s) => sum + s.sustainability.overall, 0) / STARTUPS.length);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Header */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+        <h1 className="font-display text-4xl font-bold tracking-tight text-foreground">
+          🏆 Sustainability Leaderboard
+        </h1>
+        <p className="mt-2 text-lg text-muted-foreground">
+          Startups ranked by on-chain sustainability score — transparency meets impact.
+        </p>
+      </motion.div>
+
+      {/* Filters */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center"
+      >
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Search startups…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={catFilter} onValueChange={setCatFilter}>
+          <SelectTrigger className="w-full sm:w-44">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {['All', ...CATEGORIES].map(c => (
+              <SelectItem key={c} value={c}>{c}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={chainFilter} onValueChange={setChainFilter}>
+          <SelectTrigger className="w-full sm:w-44">
+            <SelectValue placeholder="Blockchain" />
+          </SelectTrigger>
+          <SelectContent>
+            {BLOCKCHAINS.map(b => (
+              <SelectItem key={b} value={b}>{b}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </motion.div>
+
+      {/* Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="rounded-xl border bg-card overflow-hidden"
+      >
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead className="w-16 text-center">#</TableHead>
+              <TableHead>Startup</TableHead>
+              <TableHead className="text-center">Score</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Blockchain</TableHead>
+              <TableHead className="text-right">MRR</TableHead>
+              <TableHead className="text-center">Trend</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {ranked.map((s, i) => (
+              <TableRow
+                key={s.id}
+                className={`transition-colors ${podiumStyles[i] ?? 'hover:bg-muted/50'}`}
+              >
+                <TableCell className="text-center font-mono font-bold">
+                  <div className="flex items-center justify-center gap-1">
+                    {i < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[i]}`} />}
+                    <span>{i + 1}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Link to={`/startup/${s.id}`} className="flex items-center gap-3 font-semibold text-foreground hover:text-primary transition-colors">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+                      {s.name.charAt(0)}
+                    </div>
+                    {s.name}
+                  </Link>
+                </TableCell>
+                <TableCell className="text-center">
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-sm font-bold ${scoreColor(s.sustainability.overall)}`}>
+                    {s.sustainability.overall}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                    {s.category}
+                  </span>
+                </TableCell>
+                <TableCell className="text-xs text-muted-foreground font-mono">Base Sepolia</TableCell>
+                <TableCell className="text-right font-mono font-medium">
+                  {formatCurrency(s.mrr)}
+                </TableCell>
+                <TableCell className="text-center">{trendIcon(s.growth)}</TableCell>
+              </TableRow>
+            ))}
+            {ranked.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
+                  No startups match your filters.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </motion.div>
+
+      {/* Platform Impact Summary */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="mt-10"
+      >
+        <h2 className="mb-4 font-display text-2xl font-bold text-foreground">
+          Platform Impact Summary
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            { icon: Leaf, label: 'Total Carbon Offsets', value: `${totalCarbonOffset.toLocaleString()}t`, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+            { icon: Shield, label: 'Green-Pledged Startups', value: `${greenPledged}`, color: 'text-sky-400', bg: 'bg-sky-500/10' },
+            { icon: BarChart3, label: 'Avg Sustainability Score', value: `${avgScore}/100`, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+          ].map(card => (
+            <div key={card.label} className="rounded-xl border bg-card p-6">
+              <div className={`mb-3 inline-flex rounded-lg p-2.5 ${card.bg}`}>
+                <card.icon className={`h-5 w-5 ${card.color}`} />
+              </div>
+              <p className="text-sm text-muted-foreground">{card.label}</p>
+              <p className="mt-1 font-display text-3xl font-bold text-foreground">{card.value}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+}

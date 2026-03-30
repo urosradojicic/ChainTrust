@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import StartupDetail from "./pages/StartupDetail";
 import Register from "./pages/Register";
+import Leaderboard from "./pages/Leaderboard";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
