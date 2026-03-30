@@ -12,7 +12,7 @@ import {
   Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
 } from '@/components/ui/table';
 
-const BLOCKCHAINS = ['All', ...Array.from(new Set(STARTUPS.map(() => 'Base Sepolia')))];
+const BLOCKCHAINS = ['All', 'Base Sepolia'];
 
 function scoreColor(s: number) {
   if (s >= 75) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
@@ -21,15 +21,15 @@ function scoreColor(s: number) {
 }
 
 function trendIcon(growth: number) {
-  if (growth > 2) return <TrendingUp className="h-4 w-4 text-emerald-400" />;
-  if (growth < -2) return <TrendingDown className="h-4 w-4 text-red-400" />;
+  if (growth > 2) return <TrendingUp className="h-4 w-4 text-primary" />;
+  if (growth < -2) return <TrendingDown className="h-4 w-4 text-destructive" />;
   return <Minus className="h-4 w-4 text-muted-foreground" />;
 }
 
 const podiumStyles: Record<number, string> = {
-  0: 'bg-yellow-500/10 border-l-4 border-l-yellow-400',
-  1: 'bg-gray-400/10 border-l-4 border-l-gray-400',
-  2: 'bg-amber-700/10 border-l-4 border-l-amber-600',
+  0: 'bg-yellow-500/[0.08] border-l-4 border-l-yellow-400',
+  1: 'bg-gray-400/[0.06] border-l-4 border-l-gray-400',
+  2: 'bg-amber-700/[0.06] border-l-4 border-l-amber-600',
 };
 
 const podiumIcons: Record<number, string> = {
@@ -80,11 +80,11 @@ export default function Leaderboard() {
             placeholder="Search startups…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-card border-border"
           />
         </div>
         <Select value={catFilter} onValueChange={setCatFilter}>
-          <SelectTrigger className="w-full sm:w-44">
+          <SelectTrigger className="w-full sm:w-44 bg-card border-border">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -94,7 +94,7 @@ export default function Leaderboard() {
           </SelectContent>
         </Select>
         <Select value={chainFilter} onValueChange={setChainFilter}>
-          <SelectTrigger className="w-full sm:w-44">
+          <SelectTrigger className="w-full sm:w-44 bg-card border-border">
             <SelectValue placeholder="Blockchain" />
           </SelectTrigger>
           <SelectContent>
@@ -110,11 +110,11 @@ export default function Leaderboard() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-xl border bg-card overflow-hidden"
+        className="rounded-xl glass-card overflow-hidden"
       >
         <Table>
           <TableHeader>
-            <TableRow className="bg-muted/50">
+            <TableRow className="border-white/10 bg-white/[0.03]">
               <TableHead className="w-16 text-center">#</TableHead>
               <TableHead>Startup</TableHead>
               <TableHead className="text-center">Score</TableHead>
@@ -128,9 +128,9 @@ export default function Leaderboard() {
             {ranked.map((s, i) => (
               <TableRow
                 key={s.id}
-                className={`transition-colors ${podiumStyles[i] ?? 'hover:bg-muted/50'}`}
+                className={`transition-colors border-white/5 ${podiumStyles[i] ?? 'hover:bg-white/[0.03]'}`}
               >
-                <TableCell className="text-center font-mono font-bold">
+                <TableCell className="text-center font-mono font-bold text-foreground">
                   <div className="flex items-center justify-center gap-1">
                     {i < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[i]}`} />}
                     <span>{i + 1}</span>
@@ -150,12 +150,12 @@ export default function Leaderboard() {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                  <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium text-muted-foreground">
                     {s.category}
                   </span>
                 </TableCell>
                 <TableCell className="text-xs text-muted-foreground font-mono">Base Sepolia</TableCell>
-                <TableCell className="text-right font-mono font-medium">
+                <TableCell className="text-right font-mono font-medium text-foreground">
                   {formatCurrency(s.mrr)}
                 </TableCell>
                 <TableCell className="text-center">{trendIcon(s.growth)}</TableCell>
@@ -185,10 +185,10 @@ export default function Leaderboard() {
         <div className="grid gap-4 sm:grid-cols-3">
           {[
             { icon: Leaf, label: 'Total Carbon Offsets', value: `${totalCarbonOffset.toLocaleString()}t`, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-            { icon: Shield, label: 'Green-Pledged Startups', value: `${greenPledged}`, color: 'text-sky-400', bg: 'bg-sky-500/10' },
+            { icon: Shield, label: 'Green-Pledged Startups', value: `${greenPledged}`, color: 'text-blue-400', bg: 'bg-blue-500/10' },
             { icon: BarChart3, label: 'Avg Sustainability Score', value: `${avgScore}/100`, color: 'text-amber-400', bg: 'bg-amber-500/10' },
           ].map(card => (
-            <div key={card.label} className="rounded-xl border bg-card p-6">
+            <div key={card.label} className="rounded-xl glass-card gradient-border p-6">
               <div className={`mb-3 inline-flex rounded-lg p-2.5 ${card.bg}`}>
                 <card.icon className={`h-5 w-5 ${card.color}`} />
               </div>

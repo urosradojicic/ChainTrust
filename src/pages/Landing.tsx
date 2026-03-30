@@ -45,11 +45,11 @@ export default function Landing() {
           className="pointer-events-none absolute inset-0 h-full w-full object-cover"
           src="/hero-bg.mp4"
         />
-        <div className="pointer-events-none absolute inset-0 bg-background/60 backdrop-blur-[2px]" />
+        <div className="pointer-events-none absolute inset-0 bg-background/75 backdrop-blur-[2px]" />
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             custom={0} variants={fadeUp} initial="hidden" animate="visible"
-            className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl"
+            className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
             Transparent Startup Metrics,{' '}
             <span className="gradient-text">Verified On-Chain</span>
@@ -67,7 +67,7 @@ export default function Landing() {
             <Link to="/dashboard" className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
               Explore Dashboard
             </Link>
-            <Link to="/register" className="rounded-xl border border-border px-6 py-3 font-semibold text-foreground transition hover:border-primary hover:text-primary">
+            <Link to="/register" className="rounded-xl border border-white/20 px-6 py-3 font-semibold text-foreground transition hover:border-primary hover:text-primary">
               Register Startup
             </Link>
           </motion.div>
@@ -75,7 +75,7 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="border-y bg-card">
+      <section className="border-y border-white/10 bg-card/50">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
           {stats.map((s, i) => (
             <motion.div
@@ -95,7 +95,7 @@ export default function Landing() {
 
       {/* How it Works */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl font-bold">How it Works</h2>
+        <h2 className="text-center text-3xl font-bold text-foreground">How it Works</h2>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s, i) => (
             <motion.div
@@ -104,7 +104,7 @@ export default function Landing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-2xl border bg-card p-6 text-center"
+              className="rounded-2xl glass-card p-6 text-center"
             >
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                 <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -112,7 +112,7 @@ export default function Landing() {
                 </svg>
               </div>
               <div className="mt-3 text-xs font-semibold text-primary">Step {i + 1}</div>
-              <h3 className="mt-1 text-lg font-bold">{s.title}</h3>
+              <h3 className="mt-1 text-lg font-bold text-foreground">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
             </motion.div>
           ))}
@@ -120,9 +120,9 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="bg-muted/50 py-20">
+      <section className="bg-surface py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold">Built for Trust</h2>
+          <h2 className="text-center text-3xl font-bold text-foreground">Built for Trust</h2>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <motion.div
@@ -131,14 +131,14 @@ export default function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ delay: i * 0.08 }}
-                className="rounded-2xl border bg-card p-6 transition hover:shadow-lg"
+                className="rounded-2xl glass-card p-6 transition hover:shadow-lg hover:shadow-primary/5"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                   <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d={f.icon} />
                   </svg>
                 </div>
-                <h3 className="mt-4 font-bold">{f.title}</h3>
+                <h3 className="mt-4 font-bold text-foreground">{f.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
               </motion.div>
             ))}
@@ -152,14 +152,14 @@ export default function Landing() {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary to-purple-700 p-12 text-center shadow-xl"
+          className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary to-emerald-700 p-12 text-center shadow-xl shadow-primary/20"
         >
           <h2 className="text-3xl font-bold text-primary-foreground">Ready to Build Investor Trust?</h2>
-          <p className="mx-auto mt-4 max-w-md text-purple-200">
+          <p className="mx-auto mt-4 max-w-md text-emerald-200">
             Join 127+ startups already publishing verified metrics on-chain.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/register" className="rounded-xl bg-card px-6 py-3 font-semibold text-primary transition hover:bg-card/90">
+            <Link to="/register" className="rounded-xl bg-background px-6 py-3 font-semibold text-primary transition hover:bg-background/90">
               Register Now
             </Link>
             <Link to="/dashboard" className="rounded-xl border border-primary-foreground/40 px-6 py-3 font-semibold text-primary-foreground transition hover:bg-primary-foreground/10">

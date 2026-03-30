@@ -22,7 +22,7 @@ export default function Sparkline({ data, width = 80, height = 32 }: SparklinePr
     <svg width={width} height={height} className="overflow-visible">
       <polyline
         fill="none"
-        stroke={trending ? '#1D9E75' : '#E24B4A'}
+        stroke={trending ? '#10B981' : '#EF4444'}
         strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
