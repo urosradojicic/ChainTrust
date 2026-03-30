@@ -14,6 +14,91 @@ export type Database = {
   }
   public: {
     Tables: {
+      metrics_history: {
+        Row: {
+          carbon_offsets: number
+          costs: number
+          created_at: string
+          growth_rate: number
+          id: string
+          mau: number
+          month: string
+          month_date: string
+          revenue: number
+          startup_id: string
+          transactions: number
+        }
+        Insert: {
+          carbon_offsets?: number
+          costs?: number
+          created_at?: string
+          growth_rate?: number
+          id?: string
+          mau?: number
+          month: string
+          month_date?: string
+          revenue?: number
+          startup_id: string
+          transactions?: number
+        }
+        Update: {
+          carbon_offsets?: number
+          costs?: number
+          created_at?: string
+          growth_rate?: number
+          id?: string
+          mau?: number
+          month?: string
+          month_date?: string
+          revenue?: number
+          startup_id?: string
+          transactions?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metrics_history_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pledges: {
+        Row: {
+          committed_date: string
+          created_at: string
+          id: string
+          pledge_text: string
+          startup_id: string
+          status: string
+        }
+        Insert: {
+          committed_date?: string
+          created_at?: string
+          id?: string
+          pledge_text: string
+          startup_id: string
+          status?: string
+        }
+        Update: {
+          committed_date?: string
+          created_at?: string
+          id?: string
+          pledge_text?: string
+          startup_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pledges_startup_id_fkey"
+            columns: ["startup_id"]
+            isOneToOne: false
+            referencedRelation: "startups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -44,6 +129,138 @@ export type Database = {
           updated_at?: string
           user_id?: string
           visibility_public?: boolean
+        }
+        Relationships: []
+      }
+      proposals: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          id: string
+          proposer: string
+          status: string
+          title: string
+          votes_abstain: number
+          votes_against: number
+          votes_for: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          proposer: string
+          status?: string
+          title: string
+          votes_abstain?: number
+          votes_against?: number
+          votes_for?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          proposer?: string
+          status?: string
+          title?: string
+          votes_abstain?: number
+          votes_against?: number
+          votes_for?: number
+        }
+        Relationships: []
+      }
+      startups: {
+        Row: {
+          blockchain: string
+          carbon_offset_tonnes: number
+          carbon_score: number
+          category: string
+          chain_type: string | null
+          created_at: string
+          description: string | null
+          energy_consumption: number
+          energy_per_transaction: string | null
+          energy_score: number
+          founded_date: string | null
+          governance_score: number
+          growth_rate: number
+          id: string
+          inflation_rate: number
+          logo_url: string | null
+          mrr: number
+          name: string
+          sustainability_score: number
+          team_size: number
+          token_concentration_pct: number
+          tokenomics_score: number
+          treasury: number
+          trust_score: number
+          users: number
+          verified: boolean
+          website: string | null
+          whale_concentration: number
+        }
+        Insert: {
+          blockchain?: string
+          carbon_offset_tonnes?: number
+          carbon_score?: number
+          category?: string
+          chain_type?: string | null
+          created_at?: string
+          description?: string | null
+          energy_consumption?: number
+          energy_per_transaction?: string | null
+          energy_score?: number
+          founded_date?: string | null
+          governance_score?: number
+          growth_rate?: number
+          id?: string
+          inflation_rate?: number
+          logo_url?: string | null
+          mrr?: number
+          name: string
+          sustainability_score?: number
+          team_size?: number
+          token_concentration_pct?: number
+          tokenomics_score?: number
+          treasury?: number
+          trust_score?: number
+          users?: number
+          verified?: boolean
+          website?: string | null
+          whale_concentration?: number
+        }
+        Update: {
+          blockchain?: string
+          carbon_offset_tonnes?: number
+          carbon_score?: number
+          category?: string
+          chain_type?: string | null
+          created_at?: string
+          description?: string | null
+          energy_consumption?: number
+          energy_per_transaction?: string | null
+          energy_score?: number
+          founded_date?: string | null
+          governance_score?: number
+          growth_rate?: number
+          id?: string
+          inflation_rate?: number
+          logo_url?: string | null
+          mrr?: number
+          name?: string
+          sustainability_score?: number
+          team_size?: number
+          token_concentration_pct?: number
+          tokenomics_score?: number
+          treasury?: number
+          trust_score?: number
+          users?: number
+          verified?: boolean
+          website?: string | null
+          whale_concentration?: number
         }
         Relationships: []
       }
