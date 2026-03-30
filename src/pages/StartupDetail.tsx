@@ -231,6 +231,7 @@ function AuditTrailTab({ startupId }: { startupId: string }) {
 }
 
 
+export default function StartupDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: startup, isLoading } = useStartup(id);
   const { data: metrics = [] } = useMetricsHistory(id);
