@@ -7,6 +7,7 @@ import Sparkline from '@/components/common/Sparkline';
 import Badge from '@/components/common/Badge';
 import { useStartups } from '@/hooks/use-startups';
 import { Loader2 } from 'lucide-react';
+import LiveFeed from '@/components/LiveFeed';
 
 const categoryColors: Record<string, 'info' | 'primary' | 'warning' | 'success'> = {
   Fintech: 'info',
