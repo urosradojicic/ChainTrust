@@ -1,5 +1,41 @@
 import type { SustainabilityData } from '@/components/SustainabilityScore';
 
+export interface TokenDistribution {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export interface FundingRound {
+  round: string;
+  amount: number;
+  date: string;
+  valuation: number;
+}
+
+export interface Pledge {
+  text: string;
+  dateCommitted: string;
+  active: boolean;
+}
+
+export interface ExtendedData {
+  teamSize: number;
+  foundedDate: string;
+  treasury: number;
+  financials: { month: string; revenue: number; costs: number; profit: number }[];
+  fundingRounds: FundingRound[];
+  tokenDistribution: TokenDistribution[];
+  vestingSchedule: { period: string; unlocked: number }[];
+  whaleConcentration: number; // % held by top 10 wallets
+  inflationRate: number;
+  sdgAlignment: number[]; // UN SDG numbers
+  energyConsumption: number; // kWh per month
+  carbonOffsetHistory: { month: string; tons: number }[];
+  pledges: Pledge[];
+  platformAvgSustainability: number;
+}
+
 export interface StartupData {
   id: string;
   name: string;
@@ -30,6 +66,7 @@ export interface StartupData {
   txHash: string;
   blockNumber: number;
   sustainability: SustainabilityData;
+  extended: ExtendedData;
 }
 
 export const STARTUPS: StartupData[] = [
