@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light mode (preserved) */
   :root {
     --background: 40 20% 97%;
     --foreground: 240 10% 10%;
@@ -12,7 +13,7 @@
     --card-foreground: 240 10% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 10%;
-    --primary: 244 42% 50%;
+    --primary: 160 63% 40%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96%;
     --secondary-foreground: 240 10% 10%;
@@ -26,9 +27,10 @@
     --warning-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 244 42% 50%;
+    --ring: 160 63% 40%;
     --radius: 0.75rem;
     --surface: 40 20% 97%;
+    --electric: 217 91% 60%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -40,38 +42,40 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Dark mode — Bloomberg Terminal meets Web3 */
   .dark {
-    --background: 240 10% 6%;
-    --foreground: 0 0% 95%;
-    --card: 240 10% 9%;
-    --card-foreground: 0 0% 95%;
-    --popover: 240 10% 9%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 244 42% 55%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 12%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 13%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 8% 15%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 240 8% 15%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 160 70% 40%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 35%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --warning: 36 78% 45%;
+    --warning: 36 78% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 240 8% 18%;
-    --input: 240 8% 18%;
-    --ring: 244 42% 55%;
-    --surface: 240 10% 8%;
+    --border: 217 20% 20%;
+    --input: 217 20% 20%;
+    --ring: 160 84% 39%;
+    --surface: 222 47% 9%;
+    --electric: 217 91% 60%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 222 47% 9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 160 84% 39%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 20% 20%;
+    --sidebar-ring: 160 84% 39%;
   }
 }
 
@@ -92,6 +96,37 @@
     @apply transition-transform duration-200 hover:scale-105;
   }
   .gradient-text {
-    @apply bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary to-emerald-400 bg-clip-text text-transparent;
+  }
+  .glass-card {
+    @apply bg-white/[0.05] backdrop-blur-xl border border-white/10;
+  }
+  .gradient-border {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(160 84% 39% / 0.4), hsl(217 91% 60% / 0.4), hsl(160 84% 39% / 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .glow-dot {
+    box-shadow: 0 0 6px 2px currentColor;
+  }
+  .startup-card-hover {
+    @apply transition-all duration-300;
+  }
+  .startup-card-hover:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px -5px hsl(160 84% 39% / 0.2), 0 10px 30px -10px rgba(0,0,0,0.4);
   }
 }
