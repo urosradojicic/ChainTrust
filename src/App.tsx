@@ -15,6 +15,7 @@ import StartupDetail from "./pages/StartupDetail";
 import Register from "./pages/Register";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
+import Demo from "./pages/Demo";
 import NotFound from "./pages/NotFound";
 
 const AnimatedRoutes = () => {
@@ -30,6 +31,7 @@ const AnimatedRoutes = () => {
         <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
         <Route path="/staking" element={<PageTransition><Staking /></PageTransition>} />
         <Route path="/governance" element={<PageTransition><Governance /></PageTransition>} />
+        <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>

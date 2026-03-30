@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/staking', label: 'Staking' },
   { path: '/governance', label: 'Governance' },
+  { path: '/demo', label: 'Demo' },
 ];
 
 export default function Navbar() {
