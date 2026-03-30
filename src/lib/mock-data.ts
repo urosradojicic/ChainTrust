@@ -1,3 +1,5 @@
+import type { SustainabilityData } from '@/components/SustainabilityScore';
+
 export interface StartupData {
   id: string;
   name: string;
@@ -27,6 +29,7 @@ export interface StartupData {
   }[];
   txHash: string;
   blockNumber: number;
+  sustainability: SustainabilityData;
 }
 
 export const STARTUPS: StartupData[] = [
@@ -69,6 +72,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xa1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2',
     blockNumber: 14523891,
+    sustainability: {
+      overall: 82,
+      energyEfficiency: { score: 23, chain: 'Base (PoS)', energyPerTx: '0.001 kWh' },
+      carbonOffset: { score: 20, purchased: true, tons: 34 },
+      tokenomicsHealth: { score: 21, concentration: 'Low', inflation: '2%', vesting: '4yr linear' },
+      governancePledges: { score: 18, pledgesCount: 4, pledges: ['Net Zero 2027', 'Green Hosting', 'Carbon Reporting', 'Fair Token Distribution'] },
+    },
   },
   {
     id: 'cloudmetrics',
@@ -109,6 +119,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xb2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3',
     blockNumber: 14523950,
+    sustainability: {
+      overall: 71,
+      energyEfficiency: { score: 22, chain: 'Base (PoS)', energyPerTx: '0.001 kWh' },
+      carbonOffset: { score: 14, purchased: true, tons: 16 },
+      tokenomicsHealth: { score: 19, concentration: 'Medium', inflation: '3%', vesting: '3yr cliff' },
+      governancePledges: { score: 16, pledgesCount: 3, pledges: ['Green Hosting', 'Carbon Reporting', 'Open Source Commitment'] },
+    },
   },
   {
     id: 'defiyield',
@@ -149,6 +166,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xc3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4',
     blockNumber: 14524100,
+    sustainability: {
+      overall: 48,
+      energyEfficiency: { score: 20, chain: 'Base (PoS)', energyPerTx: '0.002 kWh' },
+      carbonOffset: { score: 8, purchased: false, tons: 8 },
+      tokenomicsHealth: { score: 10, concentration: 'High', inflation: '8%', vesting: '1yr cliff' },
+      governancePledges: { score: 10, pledgesCount: 2, pledges: ['Carbon Reporting', 'DAO Governance'] },
+    },
   },
   {
     id: 'greenchain',
@@ -189,6 +213,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5',
     blockNumber: 14524200,
+    sustainability: {
+      overall: 96,
+      energyEfficiency: { score: 25, chain: 'Base (PoS)', energyPerTx: '0.0005 kWh' },
+      carbonOffset: { score: 25, purchased: true, tons: 480 },
+      tokenomicsHealth: { score: 22, concentration: 'Low', inflation: '1.5%', vesting: '5yr linear' },
+      governancePledges: { score: 24, pledgesCount: 6, pledges: ['Net Zero 2025', 'Green Hosting', 'Carbon Reporting', 'Renewable Energy', 'Fair Token Distribution', 'Community Treasury'] },
+    },
   },
   {
     id: 'datavault',
@@ -229,6 +260,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6',
     blockNumber: 14524350,
+    sustainability: {
+      overall: 55,
+      energyEfficiency: { score: 21, chain: 'Base (PoS)', energyPerTx: '0.001 kWh' },
+      carbonOffset: { score: 12, purchased: true, tons: 13 },
+      tokenomicsHealth: { score: 13, concentration: 'Medium', inflation: '5%', vesting: '2yr cliff' },
+      governancePledges: { score: 9, pledgesCount: 2, pledges: ['Carbon Reporting', 'Open Source Commitment'] },
+    },
   },
   {
     id: 'tokenbridge',
@@ -269,6 +307,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xf6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7',
     blockNumber: 14524500,
+    sustainability: {
+      overall: 22,
+      energyEfficiency: { score: 15, chain: 'Multi-chain', energyPerTx: '0.01 kWh' },
+      carbonOffset: { score: 3, purchased: false, tons: 5 },
+      tokenomicsHealth: { score: 2, concentration: 'Very High', inflation: '12%', vesting: 'No vesting' },
+      governancePledges: { score: 2, pledgesCount: 1, pledges: ['DAO Governance'] },
+    },
   },
 ];
 

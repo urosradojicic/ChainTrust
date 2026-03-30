@@ -5,6 +5,7 @@ import { STARTUPS } from '@/lib/mock-data';
 import { formatCurrency, formatNumber, formatAddress } from '@/lib/format';
 import { CONTRACTS } from '@/lib/contracts';
 import Badge from '@/components/common/Badge';
+import SustainabilityScore from '@/components/SustainabilityScore';
 import { useState } from 'react';
 
 const categoryColors: Record<string, 'info' | 'primary' | 'warning' | 'success'> = {
@@ -217,6 +218,11 @@ export default function StartupDetail() {
             <MetricsChart data={chart.data} color={chart.color} prefix={chart.prefix} />
           </div>
         ))}
+      </div>
+
+      {/* Sustainability Score */}
+      <div className="mt-8">
+        <SustainabilityScore data={startup.sustainability} />
       </div>
 
       {/* Metrics History */}
