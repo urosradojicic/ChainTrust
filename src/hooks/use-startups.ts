@@ -53,7 +53,18 @@ export interface DbPledge {
   status: string;
 }
 
-export interface DbProposal {
+export interface DbAuditEntry {
+  id: string;
+  startup_id: string;
+  user_id: string;
+  field_changed: string;
+  old_value: string | null;
+  new_value: string | null;
+  tx_hash: string;
+  changed_at: string;
+}
+
+
   id: string;
   title: string;
   description: string | null;
