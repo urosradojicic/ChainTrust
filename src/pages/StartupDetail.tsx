@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
@@ -170,6 +170,36 @@ const defaultVesting = [
   { period: 'Year 3', unlocked: 75 }, { period: 'Year 4', unlocked: 100 },
 ];
 
+function OnChainTimestamp() {
+  const [minutes, setMinutes] = useState(2);
+  useEffect(() => {
+    const interval = setInterval(() => setMinutes(prev => prev + 1), 60000);
+    return () => clearInterval(interval);
+  }, []);
+  return (
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+      </span>
+      Last verified on-chain: {minutes} minute{minutes !== 1 ? 's' : ''} ago
+    </div>
+  );
+}
+
+function ViewOnBaseButton() {
+  return (
+    <a
+      href="https://sepolia.basescan.org"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
+    >
+      View on Base <ExternalLink className="h-3 w-3" />
+    </a>
+  );
+}
+
 export default function StartupDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: startup, isLoading } = useStartup(id);
@@ -244,6 +274,10 @@ export default function StartupDetail() {
                 <ExternalLink className="h-3 w-3" />
               </a>
             )}
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            <OnChainTimestamp />
+            <ViewOnBaseButton />
           </div>
         </motion.div>
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>

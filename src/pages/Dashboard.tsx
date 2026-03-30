@@ -7,6 +7,7 @@ import Sparkline from '@/components/common/Sparkline';
 import Badge from '@/components/common/Badge';
 import { useStartups } from '@/hooks/use-startups';
 import { Loader2 } from 'lucide-react';
+import LiveFeed from '@/components/LiveFeed';
 
 const categoryColors: Record<string, 'info' | 'primary' | 'warning' | 'success'> = {
   Fintech: 'info',
@@ -59,7 +60,9 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
+      <LiveFeed />
+
+      <div className="mb-8 mt-6">
         <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
         <p className="mt-1 text-muted-foreground">Platform-wide metrics and startup leaderboard</p>
       </div>
