@@ -64,8 +64,7 @@ export interface DbAuditEntry {
   changed_at: string;
 }
 
-
-  id: string;
+export interface DbProposal {
   title: string;
   description: string | null;
   proposer: string;
