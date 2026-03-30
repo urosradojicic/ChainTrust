@@ -14,6 +14,8 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role, signOut } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
