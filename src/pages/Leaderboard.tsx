@@ -1,16 +1,13 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, TrendingDown, Minus, Search, Leaf, Shield, BarChart3 } from 'lucide-react';
-import { STARTUPS, CATEGORIES } from '@/lib/mock-data';
+import { Trophy, TrendingUp, TrendingDown, Minus, Search, Leaf, Shield, BarChart3, Loader2 } from 'lucide-react';
+import { CATEGORIES } from '@/lib/mock-data';
 import { formatCurrency } from '@/lib/format';
 import { Input } from '@/components/ui/input';
-import {
-  Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
-} from '@/components/ui/select';
-import {
-  Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
-} from '@/components/ui/table';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
+import { useStartups, useAllPledges } from '@/hooks/use-startups';
 
 const BLOCKCHAINS = ['All', 'Base Sepolia'];
 
@@ -39,25 +36,48 @@ const podiumIcons: Record<number, string> = {
 };
 
 export default function Leaderboard() {
+  const { data: startups, isLoading } = useStartups();
+  const { data: allPledges } = useAllPledges();
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState('All');
   const [chainFilter, setChainFilter] = useState('All');
 
   const ranked = useMemo(() => {
-    let list = [...STARTUPS];
+    if (!startups) return [];
+    let list = [...startups];
     if (catFilter !== 'All') list = list.filter(s => s.category === catFilter);
     if (search.trim()) list = list.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
-    list.sort((a, b) => b.sustainability.overall - a.sustainability.overall);
+    list.sort((a, b) => b.sustainability_score - a.sustainability_score);
     return list;
-  }, [search, catFilter, chainFilter]);
+  }, [startups, search, catFilter, chainFilter]);
 
-  const totalCarbonOffset = STARTUPS.reduce((sum, s) => sum + s.carbonOffset, 0);
-  const greenPledged = STARTUPS.filter(s => s.extended.pledges.filter(p => p.active).length >= 3).length;
-  const avgScore = Math.round(STARTUPS.reduce((sum, s) => sum + s.sustainability.overall, 0) / STARTUPS.length);
+  const totalCarbonOffset = startups?.reduce((sum, s) => sum + Number(s.carbon_offset_tonnes), 0) ?? 0;
+
+  // Count startups with 3+ active pledges
+  const pledgeCountByStartup = useMemo(() => {
+    if (!allPledges) return new Map<string, number>();
+    const map = new Map<string, number>();
+    allPledges.forEach(p => {
+      if (p.status === 'active') map.set(p.startup_id, (map.get(p.startup_id) ?? 0) + 1);
+    });
+    return map;
+  }, [allPledges]);
+
+  const greenPledged = startups?.filter(s => (pledgeCountByStartup.get(s.id) ?? 0) >= 3).length ?? 0;
+  const avgScore = startups && startups.length > 0
+    ? Math.round(startups.reduce((sum, s) => sum + s.sustainability_score, 0) / startups.length)
+    : 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="font-display text-4xl font-bold tracking-tight text-foreground">
           🏆 Sustainability Leaderboard
@@ -67,51 +87,26 @@ export default function Leaderboard() {
         </p>
       </motion.div>
 
-      {/* Filters */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center"
-      >
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search startups…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-10 bg-card border-border"
-          />
+          <Input placeholder="Search startups…" value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-card border-border" />
         </div>
         <Select value={catFilter} onValueChange={setCatFilter}>
-          <SelectTrigger className="w-full sm:w-44 bg-card border-border">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
+          <SelectTrigger className="w-full sm:w-44 bg-card border-border"><SelectValue placeholder="Category" /></SelectTrigger>
           <SelectContent>
-            {CATEGORIES.map(c => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
-            ))}
+            {CATEGORIES.map(c => (<SelectItem key={c} value={c}>{c}</SelectItem>))}
           </SelectContent>
         </Select>
         <Select value={chainFilter} onValueChange={setChainFilter}>
-          <SelectTrigger className="w-full sm:w-44 bg-card border-border">
-            <SelectValue placeholder="Blockchain" />
-          </SelectTrigger>
+          <SelectTrigger className="w-full sm:w-44 bg-card border-border"><SelectValue placeholder="Blockchain" /></SelectTrigger>
           <SelectContent>
-            {BLOCKCHAINS.map(b => (
-              <SelectItem key={b} value={b}>{b}</SelectItem>
-            ))}
+            {BLOCKCHAINS.map(b => (<SelectItem key={b} value={b}>{b}</SelectItem>))}
           </SelectContent>
         </Select>
       </motion.div>
 
-      {/* Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="rounded-xl glass-card overflow-hidden"
-      >
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="rounded-xl glass-card overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-white/10 bg-white/[0.03]">
@@ -126,10 +121,7 @@ export default function Leaderboard() {
           </TableHeader>
           <TableBody>
             {ranked.map((s, i) => (
-              <TableRow
-                key={s.id}
-                className={`transition-colors border-white/5 ${podiumStyles[i] ?? 'hover:bg-white/[0.03]'}`}
-              >
+              <TableRow key={s.id} className={`transition-colors border-white/5 ${podiumStyles[i] ?? 'hover:bg-white/[0.03]'}`}>
                 <TableCell className="text-center font-mono font-bold text-foreground">
                   <div className="flex items-center justify-center gap-1">
                     {i < 3 && <Trophy className={`h-4 w-4 ${podiumIcons[i]}`} />}
@@ -145,43 +137,29 @@ export default function Leaderboard() {
                   </Link>
                 </TableCell>
                 <TableCell className="text-center">
-                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-sm font-bold ${scoreColor(s.sustainability.overall)}`}>
-                    {s.sustainability.overall}
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-sm font-bold ${scoreColor(s.sustainability_score)}`}>
+                    {s.sustainability_score}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium text-muted-foreground">
-                    {s.category}
-                  </span>
+                  <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium text-muted-foreground">{s.category}</span>
                 </TableCell>
-                <TableCell className="text-xs text-muted-foreground font-mono">Base Sepolia</TableCell>
-                <TableCell className="text-right font-mono font-medium text-foreground">
-                  {formatCurrency(s.mrr)}
-                </TableCell>
-                <TableCell className="text-center">{trendIcon(s.growth)}</TableCell>
+                <TableCell className="text-xs text-muted-foreground font-mono">{s.blockchain}</TableCell>
+                <TableCell className="text-right font-mono font-medium text-foreground">{formatCurrency(s.mrr)}</TableCell>
+                <TableCell className="text-center">{trendIcon(Number(s.growth_rate))}</TableCell>
               </TableRow>
             ))}
             {ranked.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
-                  No startups match your filters.
-                </TableCell>
+                <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">No startups match your filters.</TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </motion.div>
 
-      {/* Platform Impact Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35 }}
-        className="mt-10"
-      >
-        <h2 className="mb-4 font-display text-2xl font-bold text-foreground">
-          Platform Impact Summary
-        </h2>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mt-10">
+        <h2 className="mb-4 font-display text-2xl font-bold text-foreground">Platform Impact Summary</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {[
             { icon: Leaf, label: 'Total Carbon Offsets', value: `${totalCarbonOffset.toLocaleString()}t`, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
