@@ -16,6 +16,8 @@ const NAV_LINKS = [
   { path: '/demo', label: 'Demo' },
 ];
 
+const STARTUP_NAV = { path: '/my-startup', label: 'My Startup' };
+
 function ThemeToggle() {
   const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
 

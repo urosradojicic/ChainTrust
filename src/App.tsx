@@ -20,6 +20,7 @@ import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
 import Portfolio from "./pages/Portfolio";
+import MyStartup from "./pages/MyStartup";
 import NotFound from "./pages/NotFound";
 
 const AnimatedRoutes = () => {
