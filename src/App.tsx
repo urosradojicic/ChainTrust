@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "./contexts/AuthContext";
+import { WalletProvider } from "./contexts/WalletContext";
 import Web3Provider from "./providers/Web3Provider";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
@@ -18,6 +19,7 @@ import Compare from "./pages/Compare";
 import Staking from "./pages/Staking";
 import Governance from "./pages/Governance";
 import Demo from "./pages/Demo";
+import Portfolio from "./pages/Portfolio";
 import NotFound from "./pages/NotFound";
 
 const AnimatedRoutes = () => {
@@ -36,6 +38,7 @@ const AnimatedRoutes = () => {
         <Route path="/staking" element={<PageTransition><Staking /></PageTransition>} />
         <Route path="/governance" element={<PageTransition><Governance /></PageTransition>} />
         <Route path="/demo" element={<PageTransition><Demo /></PageTransition>} />
+        <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
@@ -45,19 +48,21 @@ const AnimatedRoutes = () => {
 const App = () => (
   <AuthProvider>
     <Web3Provider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-1">
-              <AnimatedRoutes />
-            </main>
-            <Footer />
-          </div>
-        </BrowserRouter>
-      </TooltipProvider>
+      <WalletProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">
+                <AnimatedRoutes />
+              </main>
+              <Footer />
+            </div>
+          </BrowserRouter>
+        </TooltipProvider>
+      </WalletProvider>
     </Web3Provider>
   </AuthProvider>
 );
