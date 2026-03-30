@@ -37,10 +37,15 @@ export default function Landing() {
     <div className="overflow-hidden">
       {/* Hero */}
       <section className="relative flex min-h-[80vh] items-center justify-center px-4 py-24">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-32 -top-32 h-96 w-96 animate-blob-1 rounded-full bg-gradient-to-tr from-primary/20 to-purple-400/20 blur-3xl" />
-          <div className="absolute -bottom-32 -right-32 h-96 w-96 animate-blob-2 rounded-full bg-gradient-to-tr from-accent/20 to-emerald-400/20 blur-3xl" />
-        </div>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+          src="/hero-bg.mp4"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-background/60 backdrop-blur-[2px]" />
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <motion.h1
             custom={0} variants={fadeUp} initial="hidden" animate="visible"
