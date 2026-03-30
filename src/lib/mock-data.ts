@@ -260,6 +260,13 @@ export const STARTUPS: StartupData[] = [
     ],
     txHash: '0xe5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6',
     blockNumber: 14524350,
+    sustainability: {
+      overall: 55,
+      energyEfficiency: { score: 21, chain: 'Base (PoS)', energyPerTx: '0.001 kWh' },
+      carbonOffset: { score: 12, purchased: true, tons: 13 },
+      tokenomicsHealth: { score: 13, concentration: 'Medium', inflation: '5%', vesting: '2yr cliff' },
+      governancePledges: { score: 9, pledgesCount: 2, pledges: ['Carbon Reporting', 'Open Source Commitment'] },
+    },
   },
   {
     id: 'tokenbridge',
