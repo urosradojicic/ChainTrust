@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
 
 const NAV_LINKS = [
-  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/dashboard', label: 'Dashboard', live: true },
   { path: '/leaderboard', label: 'Leaderboard' },
   { path: '/compare', label: 'Compare' },
   { path: '/staking', label: 'Staking' },
