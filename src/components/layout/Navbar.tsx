@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAuth } from '@/contexts/AuthContext';
+import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
+import { LogIn, LogOut, User, Sun, Moon, Wallet, ChevronDown } from 'lucide-react';
+import WalletConnectModal from '@/components/WalletConnectModal';
 
 const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard', live: true },
@@ -51,115 +52,156 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, role, signOut } = useAuth();
+  const { connected, address, disconnect } = useWallet();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+
+  // Build nav links dynamically — show Portfolio if wallet connected
+  const links = connected
+    ? [...NAV_LINKS.slice(0, 1), { path: '/portfolio', label: 'My Portfolio' }, ...NAV_LINKS.slice(1)]
+    : NAV_LINKS;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
-        <Link to="/" className="text-xl font-bold text-primary">
-          ChainMetrics
-        </Link>
+    <>
+      <nav className="sticky top-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+          <Link to="/" className="text-xl font-bold text-primary">
+            ChainMetrics
+          </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden items-center gap-1 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className="relative px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
-            >
-              {location.pathname === link.path && (
-                <motion.span
-                  layoutId="nav-active"
-                  className="absolute inset-0 rounded-lg bg-primary/10"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10 flex items-center gap-1.5">
-                {link.label}
-                {(link as any).live && (
-                  <span className="flex items-center gap-1">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    </span>
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400">Live</span>
-                  </span>
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-1 md:flex">
+            {links.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className="relative px-4 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+              >
+                {location.pathname === link.path && (
+                  <motion.span
+                    layoutId="nav-active"
+                    className="absolute inset-0 rounded-lg bg-primary/10"
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
                 )}
-              </span>
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          {user ? (
-            <div className="hidden items-center gap-2 sm:flex">
-              <span className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">
-                <User className="h-3.5 w-3.5" />
-                {role ?? '...'}
-              </span>
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => { signOut(); navigate('/'); }}>
-                <LogOut className="h-4 w-4 mr-1" /> Sign Out
-              </Button>
-            </div>
-          ) : (
-            <Button variant="outline" size="sm" className="hidden sm:flex border-border text-foreground" onClick={() => navigate('/login')}>
-              <LogIn className="h-4 w-4 mr-1" /> Sign In
-            </Button>
-          )}
-          <div className="hidden sm:block">
-            <ConnectButton
-              showBalance={false}
-              chainStatus="icon"
-              accountStatus="address"
-            />
-          </div>
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              {mobileOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-white/10 md:hidden"
-          >
-            <div className="flex flex-col gap-1 px-4 py-3">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileOpen(false)}
-                  className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
-                    location.pathname === link.path
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:bg-secondary'
-                  }`}
-                >
+                <span className="relative z-10 flex items-center gap-1.5">
                   {link.label}
-                </Link>
-              ))}
-              <div className="pt-2">
-                <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
+                  {(link as any).live && (
+                    <span className="flex items-center gap-1">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      </span>
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400">Live</span>
+                    </span>
+                  )}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {user ? (
+              <div className="hidden items-center gap-2 sm:flex">
+                <span className="flex items-center gap-1 rounded-lg bg-secondary px-3 py-1.5 text-xs font-medium text-foreground">
+                  <User className="h-3.5 w-3.5" />
+                  {role ?? '...'}
+                </span>
+                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground" onClick={() => { signOut(); navigate('/'); }}>
+                  <LogOut className="h-4 w-4 mr-1" /> Sign Out
+                </Button>
               </div>
+            ) : (
+              <Button variant="outline" size="sm" className="hidden sm:flex border-border text-foreground" onClick={() => navigate('/login')}>
+                <LogIn className="h-4 w-4 mr-1" /> Sign In
+              </Button>
+            )}
+
+            {/* Wallet button */}
+            <div className="hidden sm:block">
+              {connected ? (
+                <button
+                  onClick={disconnect}
+                  className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-primary/20"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
+                </button>
+              ) : (
+                <Button
+                  size="sm"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  onClick={() => setWalletModalOpen(true)}
+                >
+                  <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
+                </Button>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                {mobileOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden border-t border-white/10 md:hidden"
+            >
+              <div className="flex flex-col gap-1 px-4 py-3">
+                {links.map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    onClick={() => setMobileOpen(false)}
+                    className={`rounded-lg px-4 py-2.5 text-sm font-medium transition ${
+                      location.pathname === link.path
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:bg-secondary'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div className="pt-2">
+                  {connected ? (
+                    <button
+                      onClick={disconnect}
+                      className="flex w-full items-center gap-2 rounded-lg bg-primary/10 px-4 py-2.5 text-sm font-medium text-foreground"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
+                    </button>
+                  ) : (
+                    <Button className="w-full" onClick={() => setWalletModalOpen(true)}>
+                      <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+
+      <WalletConnectModal open={walletModalOpen} onOpenChange={setWalletModalOpen} />
+    </>
   );
 }
