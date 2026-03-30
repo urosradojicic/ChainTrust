@@ -383,6 +383,11 @@ export default function StartupDetail() {
           </div>
         </TabsContent>
 
+        {/* Impact P&L */}
+        <TabsContent value="impact-pl" className="mt-6 space-y-6">
+          <ImpactPL startup={startup} />
+        </TabsContent>
+
         {/* Tokenomics */}
         <TabsContent value="tokenomics" className="mt-6 space-y-6">
           {ext.whaleConcentration > 50 && (
