@@ -21,9 +21,7 @@ const labelCls = 'mb-1.5 block text-sm font-medium text-foreground';
 const CATEGORIES = ['DeFi', 'Fintech', 'SaaS', 'Cleantech', 'Infrastructure'];
 const BLOCKCHAINS = ['Ethereum', 'Base', 'Polygon', 'Solana', 'Arbitrum'];
 
-function genTxHash() {
-  return `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
-}
+// genTxHash removed — we now use real on-chain tx hashes
 
 interface AuditEntry {
   id: string;
