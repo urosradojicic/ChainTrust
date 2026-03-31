@@ -91,7 +91,8 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [txHash, setTxHash] = useState('');
-
+  const { register: registerOnChain } = useRegisterStartup();
+  const { isConnected } = useAccount();
   const u = <K extends keyof FormData>(key: K, val: FormData[K]) => setForm(f => ({ ...f, [key]: val }));
 
   const distSum = form.distTeam + form.distInvestors + form.distCommunity + form.distTreasury + form.distLiquidity;
