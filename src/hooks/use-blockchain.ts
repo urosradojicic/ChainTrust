@@ -98,7 +98,7 @@ export function usePublishMetrics() {
 
 export function useRegisterStartup() {
   const { writeContractAsync } = useWriteContract();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const [isPending, setIsPending] = useState(false);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
   const [error, setError] = useState<string | null>(null);
