@@ -79,6 +79,7 @@ export function usePublishMetrics() {
           proofHash as `0x${string}`,
         ],
         chain: baseSepolia,
+        account: address,
       });
 
       setTxHash(hash);
