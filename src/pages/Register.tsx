@@ -387,11 +387,20 @@ export default function Register() {
             </div>
             <div className="mt-2 text-sm text-muted-foreground">{form.description}</div>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm text-foreground">⚠️ Registration is free. Verification costs 100 CMT (paid upon oracle request).</p>
+              <p className="text-sm text-foreground">⚠️ Registration is free on testnet. Your wallet will sign a transaction on Base Sepolia.</p>
             </div>
-            <button onClick={submit} disabled={submitting}
+            {!isConnected && (
+              <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Connect wallet to register on-chain</p>
+                </div>
+                <ConnectButton />
+              </div>
+            )}
+            <button onClick={submit} disabled={submitting || !isConnected}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
-              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting to Blockchain...</> : '🚀 Submit to Blockchain'}
+              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing to Base Sepolia...</> : '🚀 Submit to Blockchain'}
             </button>
           </>)}
 
