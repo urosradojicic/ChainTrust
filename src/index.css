@@ -5,21 +5,21 @@
 @tailwind utilities;
 
 @layer base {
-  /* Light mode (preserved) */
+  /* Light mode — Ice / Electric Blue */
   :root {
-    --background: 40 20% 97%;
-    --foreground: 240 10% 10%;
+    --background: 210 20% 98%;
+    --foreground: 215 28% 17%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --card-foreground: 215 28% 17%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
-    --primary: 160 63% 40%;
+    --popover-foreground: 215 28% 17%;
+    --primary: 217 91% 52%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 240 10% 10%;
-    --muted: 40 15% 93%;
-    --muted-foreground: 240 5% 46%;
-    --accent: 160 70% 37%;
+    --secondary: 214 100% 97%;
+    --secondary-foreground: 215 28% 17%;
+    --muted: 210 22% 96%;
+    --muted-foreground: 220 9% 46%;
+    --accent: 189 94% 37%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 58%;
     --destructive-foreground: 0 0% 100%;
@@ -27,19 +27,19 @@
     --warning-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 160 63% 40%;
+    --ring: 217 91% 52%;
     --radius: 0.75rem;
-    --surface: 40 20% 97%;
+    --surface: 210 17% 95%;
     --electric: 217 91% 60%;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-background: 210 20% 98%;
+    --sidebar-foreground: 215 28% 17%;
+    --sidebar-primary: 217 91% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 100% 97%;
+    --sidebar-accent-foreground: 215 28% 17%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   /* Dark mode — Bloomberg Terminal meets Web3 */
