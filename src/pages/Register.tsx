@@ -104,9 +104,20 @@ export default function Register() {
   };
 
   const submit = async () => {
+    if (!isConnected) {
+      toast({ title: 'Wallet Required', description: 'Please connect your wallet to register on-chain.', variant: 'destructive' });
+      return;
+    }
     setSubmitting(true);
     try {
-      // Compute scores
+      // 1. Call registerStartup on-chain
+      const onChainTxHash = await registerOnChain({
+        name: form.name.trim(),
+        category: form.category,
+        metadataURI: form.website.trim() || `ipfs://chainmetrics/${form.name.trim().toLowerCase().replace(/\s+/g, '-')}`,
+      });
+
+      // 2. Compute scores
       const energyScore = form.chainType === 'PoS' ? 20 : 8;
       const carbonVal = Number(form.carbonOffsets) || 0;
       const carbonScore = Math.min(25, Math.round(carbonVal / 10));
@@ -116,6 +127,7 @@ export default function Register() {
       const governanceScore = Math.min(25, pledgeCount * 5);
       const sustainabilityScore = energyScore + carbonScore + tokenomicsScore + governanceScore;
 
+      // 3. Insert into Supabase
       const currentUser = (await supabase.auth.getUser()).data.user;
       const { data, error } = await supabase.from('startups').insert({
         name: form.name.trim().slice(0, 100),
@@ -158,12 +170,11 @@ export default function Register() {
         );
       }
 
-      // Simulate tx
-      await new Promise(r => setTimeout(r, 2000));
-      setTxHash(`0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`);
+      setTxHash(onChainTxHash);
       setSuccess(true);
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message || 'Registration failed', variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Registration failed';
+      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
