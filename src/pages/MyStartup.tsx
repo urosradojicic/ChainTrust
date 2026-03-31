@@ -180,8 +180,8 @@ export default function MyStartup() {
       fetchStartup();
       setTimeout(() => setSaved(false), 3000);
     } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Transaction failed';
-      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Save failed';
+      toast({ title: 'Save Failed', description: msg, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
