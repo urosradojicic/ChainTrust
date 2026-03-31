@@ -5,9 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/format';
+import { usePublishMetrics } from '@/hooks/use-blockchain';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   Loader2, Save, CheckCircle2, ExternalLink, Plus, History,
-  Building2, BarChart3, Leaf, FileText,
+  Building2, BarChart3, Leaf, FileText, AlertTriangle,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { DbStartup } from '@/hooks/use-startups';
@@ -18,9 +21,7 @@ const labelCls = 'mb-1.5 block text-sm font-medium text-foreground';
 const CATEGORIES = ['DeFi', 'Fintech', 'SaaS', 'Cleantech', 'Infrastructure'];
 const BLOCKCHAINS = ['Ethereum', 'Base', 'Polygon', 'Solana', 'Arbitrum'];
 
-function genTxHash() {
-  return `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
-}
+// genTxHash removed — we now use real on-chain tx hashes
 
 interface AuditEntry {
   id: string;
@@ -34,6 +35,8 @@ interface AuditEntry {
 export default function MyStartup() {
   const { user, role } = useAuth();
   const navigate = useNavigate();
+  const { isConnected } = useAccount();
+  const { publish, isPending: txPending } = usePublishMetrics();
   const [startup, setStartup] = useState<DbStartup | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -93,6 +96,10 @@ export default function MyStartup() {
 
   const saveProfile = async () => {
     if (!startup || !user) return;
+    if (!isConnected) {
+      toast({ title: 'Wallet Required', description: 'Please connect your wallet to publish on-chain.', variant: 'destructive' });
+      return;
+    }
     setSaving(true);
     setSaved(false);
     try {
@@ -139,11 +146,23 @@ export default function MyStartup() {
         return;
       }
 
+      // Publish metrics on-chain via smart contract
+      const txHash = await publish({
+        startupId: 1, // On-chain ID — in production this would map from DB
+        mrr: Number(form.mrr) || 0,
+        totalUsers: Number(form.users) || 0,
+        activeUsers: Math.round((Number(form.users) || 0) * 0.7),
+        burnRate: 0,
+        runway: Number(form.treasury) || 0,
+        growthRate: Number(form.growth_rate) || 0,
+        carbonOffset: Number(form.carbon_offset_tonnes) || 0,
+      });
+
+      // Update Supabase after on-chain confirmation
       const { error } = await supabase.from('startups').update(updates).eq('id', startup.id);
       if (error) throw error;
 
-      // Insert audit log entries
-      const txHash = genTxHash();
+      // Insert audit log entries with real tx hash
       await supabase.from('startup_audit_log').insert(
         changes.map(c => ({
           startup_id: startup.id,
@@ -155,25 +174,40 @@ export default function MyStartup() {
         }))
       );
 
-      // Simulate blockchain confirmation
-      await new Promise(r => setTimeout(r, 1500));
       setSaved(true);
-      toast({ title: 'Confirmed on Base', description: `${changes.length} field(s) updated. Tx: ${txHash.slice(0, 10)}...` });
+      toast({ title: 'Confirmed on Base ✓', description: `${changes.length} field(s) published on-chain. Tx: ${txHash.slice(0, 10)}...` });
 
-      // Refresh
       fetchStartup();
       setTimeout(() => setSaved(false), 3000);
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message, variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Transaction failed';
+      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
     } finally {
       setSaving(false);
     }
   };
 
   const submitMonthlyMetrics = async () => {
-    if (!startup || !monthForm.month) return;
+    if (!startup || !monthForm.month || !user) return;
+    if (!isConnected) {
+      toast({ title: 'Wallet Required', description: 'Please connect your wallet to publish on-chain.', variant: 'destructive' });
+      return;
+    }
     setSubmittingMonth(true);
     try {
+      // Publish on-chain first
+      const txHash = await publish({
+        startupId: 1,
+        mrr: Number(monthForm.revenue) || 0,
+        totalUsers: Number(monthForm.mau) || 0,
+        activeUsers: Math.round((Number(monthForm.mau) || 0) * 0.7),
+        burnRate: Number(monthForm.costs) || 0,
+        runway: 0,
+        growthRate: Number(form.growth_rate) || 0,
+        carbonOffset: Number(monthForm.carbon_offsets) || 0,
+      });
+
+      // Then save to Supabase
       const { error } = await supabase.from('metrics_history').insert({
         startup_id: startup.id,
         month: monthForm.month,
@@ -186,22 +220,21 @@ export default function MyStartup() {
       });
       if (error) throw error;
 
-      const txHash = genTxHash();
       await supabase.from('startup_audit_log').insert({
         startup_id: startup.id,
-        user_id: user!.id,
+        user_id: user.id,
         field_changed: 'monthly_metrics',
         old_value: null,
         new_value: `${monthForm.month}: Rev $${monthForm.revenue}, Costs $${monthForm.costs}, MAU ${monthForm.mau}`,
         tx_hash: txHash,
       });
 
-      await new Promise(r => setTimeout(r, 1000));
-      toast({ title: 'Monthly metrics recorded', description: `Tx: ${txHash.slice(0, 10)}...` });
+      toast({ title: 'Monthly metrics published on-chain ✓', description: `Tx: ${txHash.slice(0, 10)}...` });
       setMonthForm({ month: '', revenue: '', costs: '', mau: '', carbon_offsets: '' });
       fetchStartup();
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message, variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Transaction failed';
+      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
     } finally {
       setSubmittingMonth(false);
     }
@@ -286,11 +319,21 @@ export default function MyStartup() {
             </div>
           </div>
 
-          <button onClick={saveProfile} disabled={saving}
+          {!isConnected && (
+            <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+              <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">Wallet required to publish on-chain</p>
+                <p className="text-xs text-muted-foreground">Connect your wallet to sign and publish changes to the Base Sepolia blockchain.</p>
+              </div>
+              <ConnectButton />
+            </div>
+          )}
+          <button onClick={saveProfile} disabled={saving || txPending || !isConnected}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
-            {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Confirming on Base...</>
+            {saving || txPending ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing on Base...</>
               : saved ? <><CheckCircle2 className="h-4 w-4" /> Confirmed on Base!</>
-              : <><Save className="h-4 w-4" /> Save & Record On-Chain</>}
+              : <><Save className="h-4 w-4" /> Save & Publish On-Chain</>}
           </button>
         </TabsContent>
 

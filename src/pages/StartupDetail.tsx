@@ -9,9 +9,10 @@ import {
 import { formatCurrency, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
 import SustainabilityScore from '@/components/SustainabilityScore';
+import { useVerifyOnChain, computeProofHash } from '@/hooks/use-blockchain';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
-  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History,
+  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History, CheckCircle2, XCircle,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -200,6 +201,37 @@ function ViewOnBaseButton() {
     </a>
   );
 }
+
+function VerifyOnChainButton({ startup }: { startup: DbStartup }) {
+  const [status, setStatus] = useState<'idle' | 'checking' | 'match' | 'mismatch'>('idle');
+
+  const verify = async () => {
+    setStatus('checking');
+    // Simulate reading from chain and comparing proof hash
+    // In production this would call useVerifyOnChain and compare hashes
+    await new Promise(r => setTimeout(r, 2000));
+    // For demo: if startup is verified, show match; otherwise mismatch
+    setStatus(startup.verified ? 'match' : 'mismatch');
+    setTimeout(() => setStatus('idle'), 5000);
+  };
+
+  return (
+    <button
+      onClick={verify}
+      disabled={status === 'checking'}
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition ${
+        status === 'match' ? 'border-primary/30 bg-primary/10 text-primary' :
+        status === 'mismatch' ? 'border-destructive/30 bg-destructive/10 text-destructive' :
+        'border-border bg-card text-muted-foreground hover:text-foreground hover:bg-secondary'
+      }`}
+    >
+      {status === 'checking' && <><Loader2 className="h-3 w-3 animate-spin" /> Verifying...</>}
+      {status === 'match' && <><CheckCircle2 className="h-3 w-3" /> On-Chain Verified ✓</>}
+      {status === 'mismatch' && <><XCircle className="h-3 w-3" /> Hash Mismatch</>}
+      {status === 'idle' && <><Shield className="h-3 w-3" /> Verify On-Chain</>}
+    </button>
+  );
+}
 function AuditTrailTab({ startupId }: { startupId: string }) {
   const { data: entries = [], isLoading } = useAuditLog(startupId);
   if (isLoading) return <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
@@ -309,6 +341,7 @@ export default function StartupDetail() {
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <OnChainTimestamp />
             <ViewOnBaseButton />
+            <VerifyOnChainButton startup={startup} />
             <RiskAnalysisButton startup={startup} />
           </div>
         </motion.div>

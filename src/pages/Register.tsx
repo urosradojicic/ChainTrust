@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useRegisterStartup } from '@/hooks/use-blockchain';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, Leaf, Shield,
-  Coins, FileText, Zap, ExternalLink,
+  Coins, FileText, Zap, ExternalLink, AlertTriangle,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
@@ -88,7 +91,8 @@ export default function Register() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [txHash, setTxHash] = useState('');
-
+  const { register: registerOnChain } = useRegisterStartup();
+  const { isConnected } = useAccount();
   const u = <K extends keyof FormData>(key: K, val: FormData[K]) => setForm(f => ({ ...f, [key]: val }));
 
   const distSum = form.distTeam + form.distInvestors + form.distCommunity + form.distTreasury + form.distLiquidity;
@@ -100,9 +104,20 @@ export default function Register() {
   };
 
   const submit = async () => {
+    if (!isConnected) {
+      toast({ title: 'Wallet Required', description: 'Please connect your wallet to register on-chain.', variant: 'destructive' });
+      return;
+    }
     setSubmitting(true);
     try {
-      // Compute scores
+      // 1. Call registerStartup on-chain
+      const onChainTxHash = await registerOnChain({
+        name: form.name.trim(),
+        category: form.category,
+        metadataURI: form.website.trim() || `ipfs://chainmetrics/${form.name.trim().toLowerCase().replace(/\s+/g, '-')}`,
+      });
+
+      // 2. Compute scores
       const energyScore = form.chainType === 'PoS' ? 20 : 8;
       const carbonVal = Number(form.carbonOffsets) || 0;
       const carbonScore = Math.min(25, Math.round(carbonVal / 10));
@@ -112,6 +127,7 @@ export default function Register() {
       const governanceScore = Math.min(25, pledgeCount * 5);
       const sustainabilityScore = energyScore + carbonScore + tokenomicsScore + governanceScore;
 
+      // 3. Insert into Supabase
       const currentUser = (await supabase.auth.getUser()).data.user;
       const { data, error } = await supabase.from('startups').insert({
         name: form.name.trim().slice(0, 100),
@@ -154,12 +170,11 @@ export default function Register() {
         );
       }
 
-      // Simulate tx
-      await new Promise(r => setTimeout(r, 2000));
-      setTxHash(`0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`);
+      setTxHash(onChainTxHash);
       setSuccess(true);
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message || 'Registration failed', variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Registration failed';
+      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
@@ -372,11 +387,20 @@ export default function Register() {
             </div>
             <div className="mt-2 text-sm text-muted-foreground">{form.description}</div>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm text-foreground">⚠️ Registration is free. Verification costs 100 CMT (paid upon oracle request).</p>
+              <p className="text-sm text-foreground">⚠️ Registration is free on testnet. Your wallet will sign a transaction on Base Sepolia.</p>
             </div>
-            <button onClick={submit} disabled={submitting}
+            {!isConnected && (
+              <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">Connect wallet to register on-chain</p>
+                </div>
+                <ConnectButton />
+              </div>
+            )}
+            <button onClick={submit} disabled={submitting || !isConnected}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
-              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting to Blockchain...</> : '🚀 Submit to Blockchain'}
+              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing to Base Sepolia...</> : '🚀 Submit to Blockchain'}
             </button>
           </>)}
 
