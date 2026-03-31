@@ -42,40 +42,40 @@
     --sidebar-ring: 217 91% 60%;
   }
 
-  /* Dark mode — Bloomberg Terminal meets Web3 */
+  /* Dark mode — Deep Navy / Electric Blue / Cyan */
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 13%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 160 84% 39%;
+    --background: 216 72% 11%;
+    --foreground: 214 32% 91%;
+    --card: 215 28% 17%;
+    --card-foreground: 214 32% 91%;
+    --popover: 216 72% 13%;
+    --popover-foreground: 214 32% 91%;
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 55%;
-    --accent: 160 84% 39%;
+    --secondary: 215 39% 17%;
+    --secondary-foreground: 214 32% 91%;
+    --muted: 215 39% 17%;
+    --muted-foreground: 215 17% 53%;
+    --accent: 189 94% 43%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
     --warning: 36 78% 50%;
     --warning-foreground: 0 0% 100%;
-    --border: 217 20% 20%;
-    --input: 217 20% 20%;
-    --ring: 160 84% 39%;
-    --surface: 222 47% 9%;
+    --border: 215 24% 27%;
+    --input: 215 24% 27%;
+    --ring: 217 91% 53%;
+    --surface: 222 100% 4%;
     --electric: 217 91% 60%;
 
-    --sidebar-background: 222 47% 9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 160 84% 39%;
+    --sidebar-background: 222 100% 4%;
+    --sidebar-foreground: 214 32% 91%;
+    --sidebar-primary: 217 91% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 20% 20%;
-    --sidebar-ring: 160 84% 39%;
+    --sidebar-accent: 215 39% 17%;
+    --sidebar-accent-foreground: 214 32% 91%;
+    --sidebar-border: 215 24% 27%;
+    --sidebar-ring: 217 91% 53%;
   }
 }
 
