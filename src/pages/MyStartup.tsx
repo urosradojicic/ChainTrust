@@ -5,9 +5,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { formatCurrency, formatNumber } from '@/lib/format';
+import { usePublishMetrics } from '@/hooks/use-blockchain';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   Loader2, Save, CheckCircle2, ExternalLink, Plus, History,
-  Building2, BarChart3, Leaf, FileText,
+  Building2, BarChart3, Leaf, FileText, AlertTriangle,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { DbStartup } from '@/hooks/use-startups';
