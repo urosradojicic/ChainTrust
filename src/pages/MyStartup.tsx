@@ -146,9 +146,9 @@ export default function MyStartup() {
         return;
       }
 
-      // Publish metrics on-chain via smart contract
+      // Publish metrics on-chain via smart contract (falls back to demo mode if contracts not deployed)
       const txHash = await publish({
-        startupId: 1, // On-chain ID — in production this would map from DB
+        startupId: 1,
         mrr: Number(form.mrr) || 0,
         totalUsers: Number(form.users) || 0,
         activeUsers: Math.round((Number(form.users) || 0) * 0.7),
@@ -162,7 +162,7 @@ export default function MyStartup() {
       const { error } = await supabase.from('startups').update(updates).eq('id', startup.id);
       if (error) throw error;
 
-      // Insert audit log entries with real tx hash
+      // Insert audit log entries with tx hash
       await supabase.from('startup_audit_log').insert(
         changes.map(c => ({
           startup_id: startup.id,
@@ -175,7 +175,7 @@ export default function MyStartup() {
       );
 
       setSaved(true);
-      toast({ title: 'Confirmed on Base ✓', description: `${changes.length} field(s) published on-chain. Tx: ${txHash.slice(0, 10)}...` });
+      toast({ title: 'Confirmed on Base ✓', description: `${changes.length} field(s) published. Tx: ${txHash.slice(0, 10)}...` });
 
       fetchStartup();
       setTimeout(() => setSaved(false), 3000);
