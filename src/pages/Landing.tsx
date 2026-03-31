@@ -152,7 +152,7 @@ export default function Landing() {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary to-emerald-700 p-12 text-center shadow-xl shadow-primary/20"
+          className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary to-cyan-700 p-12 text-center shadow-xl shadow-primary/20"
         >
           <h2 className="text-3xl font-bold text-primary-foreground">Ready to Build Investor Trust?</h2>
           <p className="mx-auto mt-4 max-w-md text-emerald-200">
