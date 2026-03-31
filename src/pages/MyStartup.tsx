@@ -188,9 +188,26 @@ export default function MyStartup() {
   };
 
   const submitMonthlyMetrics = async () => {
-    if (!startup || !monthForm.month) return;
+    if (!startup || !monthForm.month || !user) return;
+    if (!isConnected) {
+      toast({ title: 'Wallet Required', description: 'Please connect your wallet to publish on-chain.', variant: 'destructive' });
+      return;
+    }
     setSubmittingMonth(true);
     try {
+      // Publish on-chain first
+      const txHash = await publish({
+        startupId: 1,
+        mrr: Number(monthForm.revenue) || 0,
+        totalUsers: Number(monthForm.mau) || 0,
+        activeUsers: Math.round((Number(monthForm.mau) || 0) * 0.7),
+        burnRate: Number(monthForm.costs) || 0,
+        runway: 0,
+        growthRate: Number(form.growth_rate) || 0,
+        carbonOffset: Number(monthForm.carbon_offsets) || 0,
+      });
+
+      // Then save to Supabase
       const { error } = await supabase.from('metrics_history').insert({
         startup_id: startup.id,
         month: monthForm.month,
@@ -203,22 +220,21 @@ export default function MyStartup() {
       });
       if (error) throw error;
 
-      const txHash = genTxHash();
       await supabase.from('startup_audit_log').insert({
         startup_id: startup.id,
-        user_id: user!.id,
+        user_id: user.id,
         field_changed: 'monthly_metrics',
         old_value: null,
         new_value: `${monthForm.month}: Rev $${monthForm.revenue}, Costs $${monthForm.costs}, MAU ${monthForm.mau}`,
         tx_hash: txHash,
       });
 
-      await new Promise(r => setTimeout(r, 1000));
-      toast({ title: 'Monthly metrics recorded', description: `Tx: ${txHash.slice(0, 10)}...` });
+      toast({ title: 'Monthly metrics published on-chain ✓', description: `Tx: ${txHash.slice(0, 10)}...` });
       setMonthForm({ month: '', revenue: '', costs: '', mau: '', carbon_offsets: '' });
       fetchStartup();
     } catch (e: any) {
-      toast({ title: 'Error', description: e.message, variant: 'destructive' });
+      const msg = e?.shortMessage || e?.message || 'Transaction failed';
+      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
     } finally {
       setSubmittingMonth(false);
     }
