@@ -1,69 +1,77 @@
 
 
-## Plan: Wire Up Real Blockchain Calls for Startup Data Integrity
+## Plan: Write Solidity Contracts + Hardhat Deploy Setup + Graceful Fallback
 
-### What This Does
+### The Problem
+The frontend calls smart contracts at addresses from `contracts.ts`, but those addresses are **local Hardhat defaults** -- no contracts are actually deployed on Base Sepolia. Every on-chain call will fail.
 
-Replace the simulated blockchain flow with **actual smart contract calls** so that when startups publish or update metrics, the data is written to the `ChainMetricsRegistry` contract on Base Sepolia — making it tamper-proof and publicly verifiable.
+### What We'll Do
 
-### How It Works
+Two things in parallel:
 
-Currently, saves go to Supabase with a fake tx hash. After this change:
+**A) Create the full Solidity project** (contracts + Hardhat config + deploy script) so you can deploy to Base Sepolia for free from your laptop.
 
-1. Startup saves metrics → app calls `publishMetrics()` on the `ChainMetricsRegistry` contract via wagmi
-2. The contract stores a **proof hash** (keccak256 of all metrics) on-chain
-3. The **real transaction hash** is stored in the audit log (not a random one)
-4. Investors can click "View on Base" and see the actual transaction on basescan
+**B) Add a graceful fallback** in the frontend so the app works in demo mode when contracts aren't deployed yet, with a banner indicating "Testnet mode - contracts pending deployment."
 
-### Technical Details
+---
 
-**Files to modify:**
+### Part A: Solidity Contracts + Deployment
 
-| File | Change |
-|------|--------|
-| `src/pages/MyStartup.tsx` | Replace `genTxHash()` with real `writeContract()` call to `publishMetrics`. Use wagmi's `useWriteContract` hook. After tx confirms, store the real tx hash in `startup_audit_log`. |
-| `src/pages/Register.tsx` | On submit, call `registerStartup()` on the `ChainMetricsRegistry` contract before/after Supabase insert. Store the real tx hash. |
-| `src/lib/contracts.ts` | Already has all ABIs and addresses — no changes needed. |
-| `src/providers/Web3Provider.tsx` | Already configured for Base Sepolia — no changes needed. |
+Create a `blockchain/` folder in the project root with:
 
-**Flow for MyStartup save:**
+| File | Purpose |
+|------|---------|
+| `blockchain/contracts/CMTToken.sol` | ERC20 + ERC20Votes governance token. Matches `CMT_TOKEN_ABI` (mint, burn, delegate). |
+| `blockchain/contracts/ChainMetricsRegistry.sol` | Core contract. `registerStartup()`, `publishMetrics()`, `getLatestMetrics()`, `getStartup()`, `getAllStartupIds()`. Stores proof hashes on-chain. |
+| `blockchain/contracts/StakingVault.sol` | Stake CMT, tier system (Basic/Pro/Whale), rewards. Matches `STAKING_ABI`. |
+| `blockchain/contracts/VerificationBadge.sol` | Soulbound NFT (ERC721 + locked). `mintBadge()`, stores trust scores. Matches `BADGE_ABI`. |
+| `blockchain/contracts/ChainMetricsDAO.sol` | OpenZeppelin Governor wrapper. `propose()`, `castVote()`, `state()`. Matches `DAO_ABI`. |
+| `blockchain/hardhat.config.js` | Hardhat config targeting Base Sepolia (chainId 84532), using `dotenv` for private key. |
+| `blockchain/scripts/deploy.js` | Deploys all 5 contracts in order, prints addresses. |
+| `blockchain/package.json` | Dependencies: hardhat, @openzeppelin/contracts, dotenv. |
+| `blockchain/.env.example` | Template: `PRIVATE_KEY=your_wallet_private_key_here` |
+| `blockchain/README.md` | Step-by-step instructions to deploy (5 commands). |
 
+**Deploy instructions** (what the README will say):
 ```text
-User clicks "Save Changes"
-  → Hash metrics: keccak256(abi.encode(mrr, users, growth, carbon, ...))
-  → Call registry.publishMetrics(startupId, mrr, users, ..., proofHash)
-  → Wait for tx confirmation on Base Sepolia
-  → Get real tx hash from receipt
-  → Update Supabase with new values
-  → Insert audit log entries with real tx hash
-  → Show "Confirmed on Base" with link to real basescan tx
+1. cd blockchain
+2. npm install
+3. Copy .env.example to .env, paste your wallet private key
+4. Get free Base Sepolia ETH from https://www.alchemy.com/faucets/base-sepolia
+5. npx hardhat run scripts/deploy.js --network baseSepolia
+6. Copy the printed addresses into src/lib/contracts.ts
 ```
 
-**Flow for Register submit:**
+Total cost: $0. Base Sepolia ETH is free from faucets.
 
-```text
-User clicks "Submit to Blockchain"
-  → Call registry.registerStartup(name, category, metadataURI)
-  → Wait for tx confirmation
-  → Get real tx hash
-  → Insert startup into Supabase with user_id
-  → Show confirmation with real tx link
-```
+### Part B: Frontend Fallback Mode
 
-**Verification feature** — add to startup profile page:
-- A "Verify On-Chain" button that reads `getLatestMetrics()` from the contract
-- Compares the on-chain proof hash with a locally computed hash of the DB values
-- Shows green checkmark if they match, red warning if they don't
+Modify `src/hooks/use-blockchain.ts` and the pages that call it:
 
-### Requirements
+- Wrap every `writeContractAsync` call in a try/catch
+- If the call fails (contract not deployed), fall back to generating a simulated tx hash and show a toast: "Contract not deployed -- using demo mode"
+- Add a small banner component that checks if the registry contract is reachable (call `getStartupCount()`) and if not, shows "Demo mode -- contracts not yet deployed on Base Sepolia"
+- This means the app **never breaks** regardless of whether contracts are deployed
 
-- User must have a wallet connected (MetaMask etc. via RainbowKit) to write to chain
-- The `ChainMetricsRegistry` contract must be deployed on Base Sepolia at the address in `contracts.ts`
-- No gas costs on testnet (Base Sepolia has faucets)
+### Part C: Update `contracts.ts` Comment
 
-### What Changes for Users
+Add a comment at the top of `contracts.ts` explaining these are placeholder addresses and should be replaced after deployment.
 
-- **Startups**: must connect wallet before editing metrics (the "Save" button becomes "Save & Publish On-Chain")
-- **Investors**: can verify any startup's data matches what's on-chain via the "Verify" button
-- **Audit trail**: now shows real transaction hashes that link to actual basescan transactions
+---
+
+### Files Modified/Created Summary
+
+| Location | Action |
+|----------|--------|
+| `blockchain/` (6+ new files) | Solidity contracts, Hardhat config, deploy script |
+| `src/hooks/use-blockchain.ts` | Add try/catch fallback to demo mode |
+| `src/pages/MyStartup.tsx` | Graceful handling when contract calls fail |
+| `src/pages/Register.tsx` | Same fallback |
+| `src/lib/contracts.ts` | Add instructional comment |
+| `src/components/BlockchainStatus.tsx` | New banner component showing contract deployment status |
+
+### End Result
+- App works perfectly in demo mode right now (no breaking)
+- When you run the 5 deploy commands from your laptop, paste the new addresses, and the app switches to real on-chain mode automatically
+- Zero cost on testnet
 
