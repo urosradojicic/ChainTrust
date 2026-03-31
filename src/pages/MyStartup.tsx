@@ -319,11 +319,21 @@ export default function MyStartup() {
             </div>
           </div>
 
-          <button onClick={saveProfile} disabled={saving}
+          {!isConnected && (
+            <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+              <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">Wallet required to publish on-chain</p>
+                <p className="text-xs text-muted-foreground">Connect your wallet to sign and publish changes to the Base Sepolia blockchain.</p>
+              </div>
+              <ConnectButton />
+            </div>
+          )}
+          <button onClick={saveProfile} disabled={saving || txPending || !isConnected}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
-            {saving ? <><Loader2 className="h-4 w-4 animate-spin" /> Confirming on Base...</>
+            {saving || txPending ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing on Base...</>
               : saved ? <><CheckCircle2 className="h-4 w-4" /> Confirmed on Base!</>
-              : <><Save className="h-4 w-4" /> Save & Record On-Chain</>}
+              : <><Save className="h-4 w-4" /> Save & Publish On-Chain</>}
           </button>
         </TabsContent>
 

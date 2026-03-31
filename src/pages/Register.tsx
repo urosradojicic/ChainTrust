@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useRegisterStartup } from '@/hooks/use-blockchain';
+import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import {
   CheckCircle2, ChevronLeft, ChevronRight, Loader2, Leaf, Shield,
-  Coins, FileText, Zap, ExternalLink,
+  Coins, FileText, Zap, ExternalLink, AlertTriangle,
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
