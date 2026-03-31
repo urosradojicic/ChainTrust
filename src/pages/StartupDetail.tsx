@@ -9,9 +9,10 @@ import {
 import { formatCurrency, formatNumber } from '@/lib/format';
 import Badge from '@/components/common/Badge';
 import SustainabilityScore from '@/components/SustainabilityScore';
+import { useVerifyOnChain, computeProofHash } from '@/hooks/use-blockchain';
 import {
   Leaf, Shield, AlertTriangle, ExternalLink, Users, Calendar,
-  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History,
+  Globe, TrendingUp, Wallet, Zap, Coins, ChevronLeft, Info, Loader2, History, CheckCircle2, XCircle,
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
