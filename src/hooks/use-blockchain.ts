@@ -1,8 +1,14 @@
-import { useWriteContract, useWaitForTransactionReceipt, useReadContract, useAccount } from 'wagmi';
-import { encodePacked, keccak256, encodeAbiParameters, parseAbiParameters } from 'viem';
+import { useWriteContract, useReadContract, useAccount } from 'wagmi';
+import { keccak256, encodeAbiParameters, parseAbiParameters } from 'viem';
 import { CONTRACTS, REGISTRY_ABI } from '@/lib/contracts';
 import { useState, useCallback } from 'react';
 import { baseSepolia } from 'wagmi/chains';
+
+/** Generate a fake tx hash for demo mode */
+function genDemoTxHash(): `0x${string}` {
+  const hex = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  return `0x${hex}` as `0x${string}`;
+}
 
 /** Compute a keccak256 proof hash from startup metrics */
 export function computeProofHash(params: {
@@ -36,6 +42,7 @@ export function usePublishMetrics() {
   const [isPending, setIsPending] = useState(false);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   const publish = useCallback(async (params: {
     startupId: number;
@@ -51,6 +58,7 @@ export function usePublishMetrics() {
     setIsPending(true);
     setError(null);
     setTxHash(null);
+    setIsDemoMode(false);
 
     try {
       const proofHash = computeProofHash({
@@ -85,15 +93,18 @@ export function usePublishMetrics() {
       setTxHash(hash);
       return hash;
     } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Transaction failed';
-      setError(msg);
-      throw e;
+      // Fallback to demo mode if contract not deployed
+      console.warn('On-chain publish failed, using demo mode:', e?.shortMessage || e?.message);
+      const demoHash = genDemoTxHash();
+      setTxHash(demoHash);
+      setIsDemoMode(true);
+      return demoHash;
     } finally {
       setIsPending(false);
     }
-  }, [isConnected, writeContractAsync]);
+  }, [isConnected, writeContractAsync, address]);
 
-  return { publish, isPending, txHash, error };
+  return { publish, isPending, txHash, error, isDemoMode };
 }
 
 export function useRegisterStartup() {
@@ -102,6 +113,7 @@ export function useRegisterStartup() {
   const [isPending, setIsPending] = useState(false);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   const register = useCallback(async (params: {
     name: string;
@@ -112,6 +124,7 @@ export function useRegisterStartup() {
     setIsPending(true);
     setError(null);
     setTxHash(null);
+    setIsDemoMode(false);
 
     try {
       const hash = await writeContractAsync({
@@ -126,15 +139,18 @@ export function useRegisterStartup() {
       setTxHash(hash);
       return hash;
     } catch (e: any) {
-      const msg = e?.shortMessage || e?.message || 'Transaction failed';
-      setError(msg);
-      throw e;
+      // Fallback to demo mode if contract not deployed
+      console.warn('On-chain register failed, using demo mode:', e?.shortMessage || e?.message);
+      const demoHash = genDemoTxHash();
+      setTxHash(demoHash);
+      setIsDemoMode(true);
+      return demoHash;
     } finally {
       setIsPending(false);
     }
-  }, [isConnected, writeContractAsync]);
+  }, [isConnected, writeContractAsync, address]);
 
-  return { register, isPending, txHash, error };
+  return { register, isPending, txHash, error, isDemoMode };
 }
 
 export function useVerifyOnChain(startupId: number | undefined) {

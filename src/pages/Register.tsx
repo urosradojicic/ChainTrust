@@ -174,7 +174,7 @@ export default function Register() {
       setSuccess(true);
     } catch (e: any) {
       const msg = e?.shortMessage || e?.message || 'Registration failed';
-      toast({ title: 'Transaction Failed', description: msg, variant: 'destructive' });
+      toast({ title: 'Registration Failed', description: msg, variant: 'destructive' });
     } finally {
       setSubmitting(false);
     }
