@@ -96,7 +96,7 @@
     @apply transition-transform duration-200 hover:scale-105;
   }
   .gradient-text {
-    @apply bg-gradient-to-r from-primary to-emerald-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-primary to-cyan-400 bg-clip-text text-transparent;
   }
   .glass-card {
     @apply bg-white/[0.05] backdrop-blur-xl border border-white/10;
