@@ -120,6 +120,7 @@ export function useRegisterStartup() {
         functionName: 'registerStartup',
         args: [params.name, params.category, params.metadataURI],
         chain: baseSepolia,
+        account: address,
       });
 
       setTxHash(hash);
