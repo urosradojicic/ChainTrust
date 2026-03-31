@@ -35,6 +35,8 @@ interface AuditEntry {
 export default function MyStartup() {
   const { user, role } = useAuth();
   const navigate = useNavigate();
+  const { isConnected } = useAccount();
+  const { publish, isPending: txPending } = usePublishMetrics();
   const [startup, setStartup] = useState<DbStartup | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
