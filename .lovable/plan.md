@@ -1,70 +1,69 @@
 
 
-## Plan: Startup Self-Service Dashboard with Blockchain Audit Trail
+## Plan: Wire Up Real Blockchain Calls for Startup Data Integrity
 
-### What We're Building
+### What This Does
 
-A `/my-startup` page where startup-role users can view and edit their startup's data, submit monthly metrics, and see a full audit history of all changes — all tracked on-chain (simulated) and stored in the database.
+Replace the simulated blockchain flow with **actual smart contract calls** so that when startups publish or update metrics, the data is written to the `ChainMetricsRegistry` contract on Base Sepolia — making it tamper-proof and publicly verifiable.
 
-### Database Changes
+### How It Works
 
-1. **Add `user_id` column to `startups` table**
-   - UUID, nullable (so existing seed data isn't broken), references `auth.users(id)`
-   - New RLS policies: startup-role users can UPDATE their own row (`auth.uid() = user_id`)
-   - New INSERT policy: startup-role users can insert with their own `user_id`
+Currently, saves go to Supabase with a fake tx hash. After this change:
 
-2. **Create `startup_audit_log` table**
-   - Columns: `id`, `startup_id`, `user_id`, `field_changed`, `old_value`, `new_value`, `tx_hash` (simulated blockchain hash), `changed_at`
-   - Public read access (transparency), authenticated insert for startup owners
-   - This is the "blockchain ledger" — every edit creates an immutable log entry with a fake tx hash
+1. Startup saves metrics → app calls `publishMetrics()` on the `ChainMetricsRegistry` contract via wagmi
+2. The contract stores a **proof hash** (keccak256 of all metrics) on-chain
+3. The **real transaction hash** is stored in the audit log (not a random one)
+4. Investors can click "View on Base" and see the actual transaction on basescan
 
-3. **Update `metrics_history` table**
-   - Add RLS policy: startup-role users can INSERT metrics for their own startup (via `user_id` on `startups`)
+### Technical Details
 
-4. **Update `/register` page** to save `user_id: auth.uid()` when inserting the startup
-
-### New Page: `/my-startup`
-
-Visible in nav only for `startup` role users. Contains:
-
-- **Header**: startup name, verified badge, last edit timestamp
-- **Editable Profile Section**: name, description, category, blockchain, website, team size
-- **Editable Metrics Section**: MRR, users, growth rate, treasury, carbon offsets, energy per tx, token concentration
-- **Monthly Metrics Submission**: form to add a new month of data (revenue, costs, MAU, carbon offsets) — appends to `metrics_history`
-- **Sustainability Pledges**: toggle pledges on/off, add custom pledges
-- **Audit Log / Change History**: table showing all past edits with:
-  - Field changed, old value, new value
-  - Simulated tx hash (links to basescan.org)
-  - Timestamp
-  - "Verified on-chain" badge
-
-### How "Blockchain Tracking" Works
-
-Every time a startup saves changes:
-1. Compare old values vs new values
-2. For each changed field, insert a row in `startup_audit_log` with a simulated tx hash
-3. Show a "Transaction confirmed on Base" animation (like the register page does)
-4. The audit log is publicly readable — investors can see every change on the startup profile page too
-
-### Startup Profile Page Update
-
-Add an "Audit Trail" tab to `/startup/:id` showing the public changelog — so investors see when MRR was updated, by whom, and the "on-chain proof."
-
-### Navigation & Access
-
-- Startup role: sees "My Startup" in nav
-- If no startup linked yet, redirect to `/register`
-- Investor/admin: don't see "My Startup" but can view audit trails on any startup profile
-
-### Files to Create/Modify
+**Files to modify:**
 
 | File | Change |
 |------|--------|
-| Migration SQL | Add `user_id` to startups, create `startup_audit_log`, RLS policies |
-| `src/pages/MyStartup.tsx` | New page with edit forms, metrics submission, audit log |
-| `src/pages/Register.tsx` | Add `user_id` on insert |
-| `src/pages/StartupDetail.tsx` | Add "Audit Trail" tab |
-| `src/hooks/use-startups.ts` | Add hooks for audit log, startup by user_id |
-| `src/components/layout/Navbar.tsx` | Add "My Startup" link for startup role |
-| `src/App.tsx` | Add `/my-startup` route |
+| `src/pages/MyStartup.tsx` | Replace `genTxHash()` with real `writeContract()` call to `publishMetrics`. Use wagmi's `useWriteContract` hook. After tx confirms, store the real tx hash in `startup_audit_log`. |
+| `src/pages/Register.tsx` | On submit, call `registerStartup()` on the `ChainMetricsRegistry` contract before/after Supabase insert. Store the real tx hash. |
+| `src/lib/contracts.ts` | Already has all ABIs and addresses — no changes needed. |
+| `src/providers/Web3Provider.tsx` | Already configured for Base Sepolia — no changes needed. |
+
+**Flow for MyStartup save:**
+
+```text
+User clicks "Save Changes"
+  → Hash metrics: keccak256(abi.encode(mrr, users, growth, carbon, ...))
+  → Call registry.publishMetrics(startupId, mrr, users, ..., proofHash)
+  → Wait for tx confirmation on Base Sepolia
+  → Get real tx hash from receipt
+  → Update Supabase with new values
+  → Insert audit log entries with real tx hash
+  → Show "Confirmed on Base" with link to real basescan tx
+```
+
+**Flow for Register submit:**
+
+```text
+User clicks "Submit to Blockchain"
+  → Call registry.registerStartup(name, category, metadataURI)
+  → Wait for tx confirmation
+  → Get real tx hash
+  → Insert startup into Supabase with user_id
+  → Show confirmation with real tx link
+```
+
+**Verification feature** — add to startup profile page:
+- A "Verify On-Chain" button that reads `getLatestMetrics()` from the contract
+- Compares the on-chain proof hash with a locally computed hash of the DB values
+- Shows green checkmark if they match, red warning if they don't
+
+### Requirements
+
+- User must have a wallet connected (MetaMask etc. via RainbowKit) to write to chain
+- The `ChainMetricsRegistry` contract must be deployed on Base Sepolia at the address in `contracts.ts`
+- No gas costs on testnet (Base Sepolia has faucets)
+
+### What Changes for Users
+
+- **Startups**: must connect wallet before editing metrics (the "Save" button becomes "Save & Publish On-Chain")
+- **Investors**: can verify any startup's data matches what's on-chain via the "Verify" button
+- **Audit trail**: now shows real transaction hashes that link to actual basescan transactions
 
