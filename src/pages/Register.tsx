@@ -114,7 +114,7 @@ export default function Register() {
       const onChainTxHash = await registerOnChain({
         name: form.name.trim(),
         category: form.category,
-        metadataURI: form.website.trim() || `ipfs://chainmetrics/${form.name.trim().toLowerCase().replace(/\s+/g, '-')}`,
+        metadataURI: form.website.trim() || `ipfs://chaintrust/${form.name.trim().toLowerCase().replace(/\s+/g, '-')}`,
       });
 
       // 2. Compute scores

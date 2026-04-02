@@ -84,7 +84,7 @@ export default function Governance() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Governance</h1>
-          <p className="mt-1 text-muted-foreground">Vote on proposals that shape the ChainMetrics protocol</p>
+          <p className="mt-1 text-muted-foreground">Vote on proposals that shape the ChainTrust protocol</p>
         </div>
         <div className="flex gap-3">
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -156,7 +156,7 @@ export default function Governance() {
             <h2 className="text-xl font-bold text-foreground">Platform Sustainability Pledges</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Commitments that startups on ChainMetrics can pledge to uphold. Toggle to commit your startup.
+            Commitments that startups on ChainTrust can pledge to uphold. Toggle to commit your startup.
           </p>
 
           {pledges.map((pledge, i) => {

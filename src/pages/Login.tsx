@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 type AppRole = 'admin' | 'investor' | 'startup';
 
 const TEST_CREDENTIALS = [
-  { role: 'Admin', email: 'admin@chainmetrics.io', password: 'admin123' },
-  { role: 'Investor', email: 'investor@chainmetrics.io', password: 'investor1' },
-  { role: 'Startup', email: 'startup@chainmetrics.io', password: 'startup1' },
+  { role: 'Admin', email: 'admin@chaintrust.io', password: 'admin123' },
+  { role: 'Investor', email: 'investor@chaintrust.io', password: 'investor1' },
+  { role: 'Startup', email: 'startup@chaintrust.io', password: 'startup1' },
 ];
 
 export default function Login() {
@@ -66,7 +66,7 @@ export default function Login() {
           <CardHeader className="pb-2 pt-8 px-8">
             <h1 className="text-3xl font-bold tracking-tight">Welcome</h1>
             <p className="text-muted-foreground text-base mt-1">
-              Sign in to ChainMetrics
+              Sign in to ChainTrust
             </p>
           </CardHeader>
           <CardContent className="px-8 pb-8">

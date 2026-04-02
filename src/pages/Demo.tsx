@@ -546,7 +546,7 @@ export default function Demo() {
             </div>
             <h3 className="text-2xl font-bold">Demo Complete!</h3>
             <p className="mt-2 text-muted-foreground max-w-md mx-auto">
-              You've walked through the full ChainMetrics lifecycle: registration, metric publishing,
+              You've walked through the full ChainTrust lifecycle: registration, metric publishing,
               oracle verification, and soulbound badge issuance.
             </p>
             <div className="mt-6 flex justify-center gap-3">

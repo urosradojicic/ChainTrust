@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-surface">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row sm:px-6 lg:px-8">
         <div>
-          <p className="text-sm font-semibold text-foreground">ChainMetrics © 2024</p>
+          <p className="text-sm font-semibold text-foreground">ChainTrust © 2024</p>
           <p className="text-xs text-muted-foreground">Transparent on-chain startup metrics</p>
         </div>
         <div className="flex gap-6">
