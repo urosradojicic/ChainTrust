@@ -84,7 +84,7 @@ export default function Governance() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Governance</h1>
-          <p className="mt-1 text-muted-foreground">Vote on proposals that shape the ChainMetrics protocol</p>
+          <p className="mt-1 text-muted-foreground">Vote on proposals that shape the ChainTrust protocol</p>
         </div>
         <div className="flex gap-3">
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
