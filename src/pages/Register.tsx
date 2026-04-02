@@ -129,9 +129,28 @@ export default function Register() {
 
       // 3. Insert into Supabase
       const currentUser = (await supabase.auth.getUser()).data.user;
+      if (!currentUser) {
+        throw new Error('You must be logged in to register a startup.');
+      }
+
+      // Ensure user has the 'startup' role (may not exist if registered before role system)
+      const { data: existingRole } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('user_id', currentUser.id)
+        .eq('role', 'startup')
+        .maybeSingle();
+
+      if (!existingRole) {
+        await supabase.from('user_roles').insert({
+          user_id: currentUser.id,
+          role: 'startup' as any,
+        });
+      }
+
       const { data, error } = await supabase.from('startups').insert({
         name: form.name.trim().slice(0, 100),
-        user_id: currentUser?.id ?? null,
+        user_id: currentUser.id,
         description: form.description.trim().slice(0, 500),
         category: form.category,
         blockchain: form.blockchain,
