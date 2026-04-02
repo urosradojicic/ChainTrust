@@ -387,7 +387,7 @@ export default function Register() {
             </div>
             <div className="mt-2 text-sm text-muted-foreground">{form.description}</div>
             <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-              <p className="text-sm text-foreground">⚠️ Registration is free on testnet. Your wallet will sign a transaction on Base Sepolia.</p>
+              <p className="text-sm text-foreground">⚠️ Registration is free on testnet. Your wallet will sign a transaction on Sepolia.</p>
             </div>
             {!isConnected && (
               <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
