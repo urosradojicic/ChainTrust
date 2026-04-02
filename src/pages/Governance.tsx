@@ -156,7 +156,7 @@ export default function Governance() {
             <h2 className="text-xl font-bold text-foreground">Platform Sustainability Pledges</h2>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
-            Commitments that startups on ChainMetrics can pledge to uphold. Toggle to commit your startup.
+            Commitments that startups on ChainTrust can pledge to uphold. Toggle to commit your startup.
           </p>
 
           {pledges.map((pledge, i) => {

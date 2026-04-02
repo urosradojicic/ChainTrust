@@ -58,7 +58,7 @@ export default function Landing() {
             custom={1} variants={fadeUp} initial="hidden" animate="visible"
             className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground"
           >
-            ChainMetrics brings radical transparency to startup fundraising. Publish your metrics on Ethereum blockchain, get verified by oracles, and build investor trust.
+            ChainTrust brings radical transparency to startup fundraising. Publish your metrics on Ethereum blockchain, get verified by oracles, and build investor trust.
           </motion.p>
           <motion.div
             custom={2} variants={fadeUp} initial="hidden" animate="visible"

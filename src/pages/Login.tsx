@@ -66,7 +66,7 @@ export default function Login() {
           <CardHeader className="pb-2 pt-8 px-8">
             <h1 className="text-3xl font-bold tracking-tight">Welcome</h1>
             <p className="text-muted-foreground text-base mt-1">
-              Sign in to ChainMetrics
+              Sign in to ChainTrust
             </p>
           </CardHeader>
           <CardContent className="px-8 pb-8">
