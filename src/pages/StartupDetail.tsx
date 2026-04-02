@@ -252,7 +252,7 @@ function AuditTrailTab({ startupId }: { startupId: string }) {
               <td className="px-4 py-3 font-medium capitalize">{e.field_changed.replace(/_/g, ' ')}</td>
               <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[120px] truncate">{e.old_value || '—'}</td>
               <td className="px-4 py-3 font-mono text-xs max-w-[120px] truncate">{e.new_value || '—'}</td>
-              <td className="px-4 py-3"><a href={`https://sepolia.basescan.org/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
+              <td className="px-4 py-3"><a href={`https://sepolia.etherscan.io/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
               <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(e.changed_at).toLocaleDateString()}</td>
             </tr>
           ))}</tbody>
