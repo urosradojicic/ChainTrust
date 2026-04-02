@@ -340,7 +340,7 @@ export default function StartupDetail() {
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <OnChainTimestamp />
-            <ViewOnBaseButton />
+            <ViewOnEtherscanButton />
             <VerifyOnChainButton startup={startup} />
             <RiskAnalysisButton startup={startup} />
           </div>
