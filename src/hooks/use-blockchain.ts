@@ -2,7 +2,7 @@ import { useWriteContract, useReadContract, useAccount } from 'wagmi';
 import { keccak256, encodeAbiParameters, parseAbiParameters } from 'viem';
 import { CONTRACTS, REGISTRY_ABI } from '@/lib/contracts';
 import { useState, useCallback } from 'react';
-import { baseSepolia } from 'wagmi/chains';
+import { sepolia } from 'wagmi/chains';
 
 /** Generate a fake tx hash for demo mode */
 function genDemoTxHash(): `0x${string}` {
@@ -86,14 +86,13 @@ export function usePublishMetrics() {
           BigInt(params.carbonOffset),
           proofHash as `0x${string}`,
         ],
-        chain: baseSepolia,
+        chain: sepolia,
         account: address,
       });
 
       setTxHash(hash);
       return hash;
     } catch (e: any) {
-      // Fallback to demo mode if contract not deployed
       console.warn('On-chain publish failed, using demo mode:', e?.shortMessage || e?.message);
       const demoHash = genDemoTxHash();
       setTxHash(demoHash);
@@ -132,14 +131,13 @@ export function useRegisterStartup() {
         abi: REGISTRY_ABI,
         functionName: 'registerStartup',
         args: [params.name, params.category, params.metadataURI],
-        chain: baseSepolia,
+        chain: sepolia,
         account: address,
       });
 
       setTxHash(hash);
       return hash;
     } catch (e: any) {
-      // Fallback to demo mode if contract not deployed
       console.warn('On-chain register failed, using demo mode:', e?.shortMessage || e?.message);
       const demoHash = genDemoTxHash();
       setTxHash(demoHash);
