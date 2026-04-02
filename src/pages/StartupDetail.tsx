@@ -189,15 +189,15 @@ function OnChainTimestamp() {
   );
 }
 
-function ViewOnBaseButton() {
+function ViewOnEtherscanButton() {
   return (
     <a
-      href="https://sepolia.basescan.org"
+      href="https://sepolia.etherscan.io"
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
     >
-      View on Base <ExternalLink className="h-3 w-3" />
+      View on Etherscan <ExternalLink className="h-3 w-3" />
     </a>
   );
 }

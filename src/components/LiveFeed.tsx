@@ -125,14 +125,14 @@ export default function LiveFeed() {
             </AnimatePresence>
           </div>
 
-          {/* Basescan link */}
+          {/* Etherscan link */}
           <a
-            href="https://sepolia.basescan.org"
+            href="https://sepolia.etherscan.io"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 flex-shrink-0 text-[10px] font-medium text-muted-foreground hover:text-foreground transition"
           >
-            Base Explorer
+            Sepolia Explorer
             <ExternalLink className="h-2.5 w-2.5" />
           </a>
         </div>

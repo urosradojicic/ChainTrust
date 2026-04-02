@@ -49,7 +49,7 @@ export default function WalletConnectModal({ open, onOpenChange }: Props) {
         {connecting ? (
           <div className="flex flex-col items-center gap-4 py-8">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            <p className="text-sm text-muted-foreground">Connecting to Base network...</p>
+            <p className="text-sm text-muted-foreground">Connecting to Sepolia network...</p>
           </div>
         ) : connected && picked ? (
           <div className="flex flex-col items-center gap-3 py-8">

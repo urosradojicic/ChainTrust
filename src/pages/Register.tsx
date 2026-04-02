@@ -237,7 +237,7 @@ export default function Register() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-foreground">Register Startup</h1>
-      <p className="mt-1 text-muted-foreground">Register on Base blockchain in 6 steps</p>
+      <p className="mt-1 text-muted-foreground">Register on Sepolia testnet in 6 steps</p>
 
       {/* Progress stepper */}
       <div className="mt-6">
