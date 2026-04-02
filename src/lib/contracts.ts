@@ -1,7 +1,7 @@
 /**
  * Contract addresses — REPLACE these with your deployed addresses after running:
  *   cd blockchain && npm run deploy
- * Current values are local Hardhat defaults and won't work on Base Sepolia.
+ * Current values are deployed on Sepolia testnet (chainId 11155111).
  */
 export const CONTRACTS = {
   CMTToken: "0xe205B8b0D5FD8e2cEE828404e8513975b330af18",

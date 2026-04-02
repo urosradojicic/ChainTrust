@@ -324,7 +324,7 @@ export default function MyStartup() {
               <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">Wallet required to publish on-chain</p>
-                <p className="text-xs text-muted-foreground">Connect your wallet to sign and publish changes to the Base Sepolia blockchain.</p>
+                <p className="text-xs text-muted-foreground">Connect your wallet to sign and publish changes to the Sepolia blockchain.</p>
               </div>
               <ConnectButton />
             </div>

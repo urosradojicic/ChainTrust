@@ -9,7 +9,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table';
 import { useStartups, useAllPledges } from '@/hooks/use-startups';
 
-const BLOCKCHAINS = ['All', 'Base Sepolia'];
+const BLOCKCHAINS = ['All', 'Sepolia'];
 
 function scoreColor(s: number) {
   if (s >= 75) return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';

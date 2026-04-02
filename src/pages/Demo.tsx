@@ -114,7 +114,7 @@ function SimulatedTerminal({ lines, speed = 60 }: { lines: string[]; speed?: num
 function StepRegister({ playing, onComplete }: { playing: boolean; onComplete: () => void }) {
   const terminalLines = [
     `❯ Connecting wallet ${MOCK_WALLET}…`,
-    '✓ Wallet connected to Base Sepolia (chainId: 84532)',
+    '✓ Wallet connected to Sepolia (chainId: 11155111)',
     '',
     `❯ ChainMetricsRegistry.registerStartup("${MOCK_STARTUP.name}", "${MOCK_STARTUP.category}", "${MOCK_STARTUP.metadataURI}")`,
     `⏳ Sending transaction to ${CONTRACTS.ChainMetricsRegistry.slice(0, 10)}…`,

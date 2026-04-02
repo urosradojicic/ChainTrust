@@ -17,7 +17,7 @@ export default function BlockchainStatus() {
     <div className="mx-auto mb-4 flex max-w-5xl items-center gap-2 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-2 text-sm">
       <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />
       <span className="text-muted-foreground">
-        <span className="font-medium text-foreground">Demo mode</span> — Contracts not yet deployed on Base Sepolia. On-chain calls will use simulated tx hashes.
+        <span className="font-medium text-foreground">Demo mode</span> — Contracts not yet deployed on Sepolia testnet. On-chain calls will use simulated tx hashes.
       </span>
     </div>
   );

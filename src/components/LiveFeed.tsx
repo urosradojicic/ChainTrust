@@ -37,7 +37,7 @@ const EVENT_GENERATORS: ((block: number) => string)[] = [
   },
   (block) => {
     const s = STARTUP_DATA[Math.floor(Math.random() * STARTUP_DATA.length)];
-    return `Block #${block.toLocaleString()} — ${s.name} metrics hash submitted to Base Sepolia`;
+    return `Block #${block.toLocaleString()} — ${s.name} metrics hash submitted to Sepolia`;
   },
   (block) => {
     const s = STARTUP_DATA[Math.floor(Math.random() * STARTUP_DATA.length)];
