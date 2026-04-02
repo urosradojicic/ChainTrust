@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-primary-foreground">B</span>
-          Built on Base
+          Built on Ethereum
         </div>
       </div>
     </footer>

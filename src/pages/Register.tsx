@@ -225,9 +225,9 @@ export default function Register() {
           <Link to="/dashboard" className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
             Go to Dashboard
           </Link>
-          <a href={`https://sepolia.basescan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer"
+          <a href={`https://sepolia.etherscan.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-secondary">
-            View on BaseScan <ExternalLink className="h-3.5 w-3.5" />
+            View on Etherscan <ExternalLink className="h-3.5 w-3.5" />
           </a>
         </div>
       </div>
@@ -237,7 +237,7 @@ export default function Register() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold text-foreground">Register Startup</h1>
-      <p className="mt-1 text-muted-foreground">Register on Base blockchain in 6 steps</p>
+      <p className="mt-1 text-muted-foreground">Register on Sepolia testnet in 6 steps</p>
 
       {/* Progress stepper */}
       <div className="mt-6">

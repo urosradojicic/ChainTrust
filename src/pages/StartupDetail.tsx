@@ -189,15 +189,15 @@ function OnChainTimestamp() {
   );
 }
 
-function ViewOnBaseButton() {
+function ViewOnEtherscanButton() {
   return (
     <a
-      href="https://sepolia.basescan.org"
+      href="https://sepolia.etherscan.io"
       target="_blank"
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground transition hover:text-foreground hover:bg-secondary"
     >
-      View on Base <ExternalLink className="h-3 w-3" />
+      View on Etherscan <ExternalLink className="h-3 w-3" />
     </a>
   );
 }
@@ -252,7 +252,7 @@ function AuditTrailTab({ startupId }: { startupId: string }) {
               <td className="px-4 py-3 font-medium capitalize">{e.field_changed.replace(/_/g, ' ')}</td>
               <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[120px] truncate">{e.old_value || '—'}</td>
               <td className="px-4 py-3 font-mono text-xs max-w-[120px] truncate">{e.new_value || '—'}</td>
-              <td className="px-4 py-3"><a href={`https://sepolia.basescan.org/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
+              <td className="px-4 py-3"><a href={`https://sepolia.etherscan.io/tx/${e.tx_hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{e.tx_hash.slice(0,10)}... <ExternalLink className="h-3 w-3" /></a></td>
               <td className="px-4 py-3 text-xs text-muted-foreground">{new Date(e.changed_at).toLocaleDateString()}</td>
             </tr>
           ))}</tbody>
@@ -340,7 +340,7 @@ export default function StartupDetail() {
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <OnChainTimestamp />
-            <ViewOnBaseButton />
+            <ViewOnEtherscanButton />
             <VerifyOnChainButton startup={startup} />
             <RiskAnalysisButton startup={startup} />
           </div>
