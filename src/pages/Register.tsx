@@ -400,7 +400,7 @@ export default function Register() {
             )}
             <button onClick={submit} disabled={submitting || !isConnected}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90 disabled:opacity-50">
-              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing to Base Sepolia...</> : '🚀 Submit to Blockchain'}
+              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Publishing to Sepolia...</> : '🚀 Submit to Blockchain'}
             </button>
           </>)}
 
