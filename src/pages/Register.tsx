@@ -225,9 +225,9 @@ export default function Register() {
           <Link to="/dashboard" className="rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
             Go to Dashboard
           </Link>
-          <a href={`https://sepolia.basescan.org/tx/${txHash}`} target="_blank" rel="noopener noreferrer"
+          <a href={`https://sepolia.etherscan.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-1 rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-secondary">
-            View on BaseScan <ExternalLink className="h-3.5 w-3.5" />
+            View on Etherscan <ExternalLink className="h-3.5 w-3.5" />
           </a>
         </div>
       </div>
