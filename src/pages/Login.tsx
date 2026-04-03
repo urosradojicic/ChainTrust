@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 type AppRole = 'admin' | 'investor' | 'startup';
 
 const TEST_CREDENTIALS = [
-  { role: 'Admin', email: 'admin@chaintrust.io', password: 'admin123' },
-  { role: 'Investor', email: 'investor@chaintrust.io', password: 'investor1' },
-  { role: 'Startup', email: 'startup@chaintrust.io', password: 'startup1' },
+  { role: 'Admin', email: 'admin@chainmetrics.io', password: 'admin123' },
+  { role: 'Investor', email: 'investor@chainmetrics.io', password: 'investor1' },
+  { role: 'Startup', email: 'startup@chainmetrics.io', password: 'startup1' },
 ];
 
 export default function Login() {
