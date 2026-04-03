@@ -55,7 +55,7 @@ export default function Navbar() {
   const { user, role, signOut } = useAuth();
   const { connected, address, disconnect } = useWallet();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  
 
   // Build nav links dynamically
   const links = [
