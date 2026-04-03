@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User, Sun, Moon, Wallet, ChevronDown } from 'lucide-react';
-import WalletConnectModal from '@/components/WalletConnectModal';
+import { LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
 
 const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard', live: true },
@@ -56,7 +55,7 @@ export default function Navbar() {
   const { user, role, signOut } = useAuth();
   const { connected, address, disconnect } = useWallet();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  
 
   // Build nav links dynamically
   const links = [
@@ -123,29 +122,8 @@ export default function Navbar() {
               </Button>
             )}
 
-            {/* Wallet button */}
-            <div className="hidden sm:block">
-              {connected ? (
-                <button
-                  onClick={disconnect}
-                  className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-primary/20"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
-                </button>
-              ) : (
-                <Button
-                  size="sm"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                  onClick={() => setWalletModalOpen(true)}
-                >
-                  <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
-                </Button>
-              )}
-            </div>
+
+
 
             <button
               className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
@@ -185,28 +163,15 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <div className="pt-2">
-                  {connected ? (
-                    <button
-                      onClick={disconnect}
-                      className="flex w-full items-center gap-2 rounded-lg bg-primary/10 px-4 py-2.5 text-sm font-medium text-foreground"
-                    >
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                      <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
-                    </button>
-                  ) : (
-                    <Button className="w-full" onClick={() => setWalletModalOpen(true)}>
-                      <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
-                    </Button>
-                  )}
-                </div>
+
+
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
 
-      <WalletConnectModal open={walletModalOpen} onOpenChange={setWalletModalOpen} />
+      
     </>
   );
 }
