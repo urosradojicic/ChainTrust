@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
 import { formatAddress, formatNumber } from '@/lib/format';
@@ -11,7 +11,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 type Tab = 'Active' | 'Passed' | 'Sustainability Pledges' | 'All';
 
 const statusVariant: Record<string, 'info' | 'success' | 'danger'> = {
@@ -35,6 +37,7 @@ const INITIAL_PLEDGES: PlatformPledge[] = [
 const TOTAL_STARTUPS = STARTUPS.length;
 
 export default function Governance() {
+  const { user } = useAuth();
   const [tab, setTab] = useState<Tab>('Active');
   const [delegateAddr, setDelegateAddr] = useState('');
   const [pledges, setPledges] = useState<PlatformPledge[]>(INITIAL_PLEDGES);
@@ -43,18 +46,76 @@ export default function Governance() {
   const [newMetric, setNewMetric] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Proposal modal state
+  const [proposalModalOpen, setProposalModalOpen] = useState(false);
+  const [proposalTitle, setProposalTitle] = useState('');
+  const [proposalDesc, setProposalDesc] = useState('');
+
+  // DB proposals
+  const [dbProposals, setDbProposals] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchProposals();
+  }, []);
+
+  const fetchProposals = async () => {
+    const { data } = await supabase.from('proposals').select('*').order('created_at', { ascending: false });
+    if (data) setDbProposals(data);
+  };
+
+  // Merge mock + DB proposals
+  const allProposals = useMemo(() => {
+    const dbMapped = dbProposals.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description || '',
+      proposer: p.proposer,
+      status: p.status,
+      forVotes: p.votes_for,
+      againstVotes: p.votes_against,
+      abstainVotes: p.votes_abstain,
+      endDate: p.ends_at || new Date().toISOString(),
+    }));
+    return [...dbMapped, ...PROPOSALS];
+  }, [dbProposals]);
+
   const filtered = useMemo(() => {
-    if (tab === 'All') return PROPOSALS;
+    if (tab === 'All') return allProposals;
     if (tab === 'Sustainability Pledges') return [];
-    return PROPOSALS.filter(p => p.status === tab);
-  }, [tab]);
+    return allProposals.filter(p => p.status === tab);
+  }, [tab, allProposals]);
 
   const tabs: Tab[] = ['Active', 'Passed', 'Sustainability Pledges', 'All'];
   const tabCounts: Record<Tab, number> = {
-    Active: PROPOSALS.filter(p => p.status === 'Active').length,
-    Passed: PROPOSALS.filter(p => p.status === 'Passed').length,
+    Active: allProposals.filter(p => p.status === 'Active').length,
+    Passed: allProposals.filter(p => p.status === 'Passed').length,
     'Sustainability Pledges': pledges.length,
-    All: PROPOSALS.length,
+    All: allProposals.length,
+  };
+
+  const handleCreateProposal = async () => {
+    if (!proposalTitle.trim()) return;
+    const endsAt = new Date();
+    endsAt.setDate(endsAt.getDate() + 7);
+    const { error } = await supabase.from('proposals').insert({
+      title: proposalTitle.trim(),
+      description: proposalDesc.trim() || null,
+      proposer: user?.email || '0x0000...anonymous',
+      status: 'Active',
+      votes_for: 0,
+      votes_against: 0,
+      votes_abstain: 0,
+      ends_at: endsAt.toISOString(),
+    });
+    if (error) {
+      toast.error('Failed to create proposal: ' + error.message);
+      return;
+    }
+    toast.success('Proposal created!');
+    setProposalTitle('');
+    setProposalDesc('');
+    setProposalModalOpen(false);
+    fetchProposals();
   };
 
   const handleCreatePledge = () => {
@@ -71,7 +132,6 @@ export default function Governance() {
   };
 
   const toggleCommit = (pledgeId: number) => {
-    // For demo, toggle startup "1"
     setPledges(prev => prev.map(p => {
       if (p.id !== pledgeId) return p;
       const has = p.committed.includes('1');
@@ -123,9 +183,39 @@ export default function Governance() {
               </div>
             </DialogContent>
           </Dialog>
-          <button className="rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
-            Create Proposal
-          </button>
+          <Dialog open={proposalModalOpen} onOpenChange={setProposalModalOpen}>
+            <DialogTrigger asChild>
+              <button className="rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
+                Create Proposal
+              </button>
+            </DialogTrigger>
+            <DialogContent className="glass-card border-white/10 sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-foreground">
+                  <Plus className="h-5 w-5 text-primary" /> New Proposal
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-2">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Title</label>
+                  <Input value={proposalTitle} onChange={e => setProposalTitle(e.target.value)} placeholder="e.g. Increase staking rewards by 5%" className="mt-1 bg-card border-border" />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Description</label>
+                  <Textarea value={proposalDesc} onChange={e => setProposalDesc(e.target.value)} placeholder="Describe your proposal…" className="mt-1 bg-card border-border" rows={4} />
+                </div>
+                <p className="text-xs text-muted-foreground">Voting period: 7 days from creation</p>
+                <div className="flex gap-3 justify-end pt-2">
+                  <DialogClose asChild>
+                    <Button variant="ghost" className="text-muted-foreground">Cancel</Button>
+                  </DialogClose>
+                  <Button onClick={handleCreateProposal} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus className="h-4 w-4 mr-1" /> Create Proposal
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
