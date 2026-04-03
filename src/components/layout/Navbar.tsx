@@ -122,29 +122,8 @@ export default function Navbar() {
               </Button>
             )}
 
-            {/* Wallet button */}
-            <div className="hidden sm:block">
-              {connected ? (
-                <button
-                  onClick={disconnect}
-                  className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-primary/20"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
-                </button>
-              ) : (
-                <Button
-                  size="sm"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                  onClick={() => setWalletModalOpen(true)}
-                >
-                  <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
-                </Button>
-              )}
-            </div>
+
+
 
             <button
               className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition hover:bg-secondary md:hidden"
