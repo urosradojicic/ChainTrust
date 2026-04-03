@@ -171,7 +171,7 @@ export default function Navbar() {
         </AnimatePresence>
       </nav>
 
-      <WalletConnectModal open={walletModalOpen} onOpenChange={setWalletModalOpen} />
+      
     </>
   );
 }
