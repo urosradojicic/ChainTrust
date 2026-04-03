@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROPOSALS, STARTUPS } from '@/lib/mock-data';
 import { formatAddress, formatNumber } from '@/lib/format';
@@ -11,7 +11,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 type Tab = 'Active' | 'Passed' | 'Sustainability Pledges' | 'All';
 
 const statusVariant: Record<string, 'info' | 'success' | 'danger'> = {
