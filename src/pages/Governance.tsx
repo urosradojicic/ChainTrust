@@ -87,10 +87,10 @@ export default function Governance() {
 
   const tabs: Tab[] = ['Active', 'Passed', 'Sustainability Pledges', 'All'];
   const tabCounts: Record<Tab, number> = {
-    Active: PROPOSALS.filter(p => p.status === 'Active').length,
-    Passed: PROPOSALS.filter(p => p.status === 'Passed').length,
+    Active: allProposals.filter(p => p.status === 'Active').length,
+    Passed: allProposals.filter(p => p.status === 'Passed').length,
     'Sustainability Pledges': pledges.length,
-    All: PROPOSALS.length,
+    All: allProposals.length,
   };
 
   const handleCreatePledge = () => {
