@@ -93,6 +93,31 @@ export default function Governance() {
     All: allProposals.length,
   };
 
+  const handleCreateProposal = async () => {
+    if (!proposalTitle.trim()) return;
+    const endsAt = new Date();
+    endsAt.setDate(endsAt.getDate() + 7);
+    const { error } = await supabase.from('proposals').insert({
+      title: proposalTitle.trim(),
+      description: proposalDesc.trim() || null,
+      proposer: user?.email || '0x0000...anonymous',
+      status: 'Active',
+      votes_for: 0,
+      votes_against: 0,
+      votes_abstain: 0,
+      ends_at: endsAt.toISOString(),
+    });
+    if (error) {
+      toast.error('Failed to create proposal: ' + error.message);
+      return;
+    }
+    toast.success('Proposal created!');
+    setProposalTitle('');
+    setProposalDesc('');
+    setProposalModalOpen(false);
+    fetchProposals();
+  };
+
   const handleCreatePledge = () => {
     if (!newTitle.trim()) return;
     setPledges(prev => [...prev, {
@@ -107,7 +132,6 @@ export default function Governance() {
   };
 
   const toggleCommit = (pledgeId: number) => {
-    // For demo, toggle startup "1"
     setPledges(prev => prev.map(p => {
       if (p.id !== pledgeId) return p;
       const has = p.committed.includes('1');
