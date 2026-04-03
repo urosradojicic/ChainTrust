@@ -163,21 +163,8 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <div className="pt-2">
-                  {connected ? (
-                    <button
-                      onClick={disconnect}
-                      className="flex w-full items-center gap-2 rounded-lg bg-primary/10 px-4 py-2.5 text-sm font-medium text-foreground"
-                    >
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                      <span className="font-mono text-xs">{address.slice(0, 6)}...{address.slice(-4)}</span>
-                    </button>
-                  ) : (
-                    <Button className="w-full" onClick={() => setWalletModalOpen(true)}>
-                      <Wallet className="h-4 w-4 mr-1" /> Connect Wallet
-                    </Button>
-                  )}
-                </div>
+
+
               </div>
             </motion.div>
           )}
