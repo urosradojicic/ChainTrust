@@ -183,9 +183,39 @@ export default function Governance() {
               </div>
             </DialogContent>
           </Dialog>
-          <button className="rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
-            Create Proposal
-          </button>
+          <Dialog open={proposalModalOpen} onOpenChange={setProposalModalOpen}>
+            <DialogTrigger asChild>
+              <button className="rounded-xl bg-primary px-5 py-2.5 font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:bg-primary/90">
+                Create Proposal
+              </button>
+            </DialogTrigger>
+            <DialogContent className="glass-card border-white/10 sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-foreground">
+                  <Plus className="h-5 w-5 text-primary" /> New Proposal
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 mt-2">
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Title</label>
+                  <Input value={proposalTitle} onChange={e => setProposalTitle(e.target.value)} placeholder="e.g. Increase staking rewards by 5%" className="mt-1 bg-card border-border" />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground">Description</label>
+                  <Textarea value={proposalDesc} onChange={e => setProposalDesc(e.target.value)} placeholder="Describe your proposal…" className="mt-1 bg-card border-border" rows={4} />
+                </div>
+                <p className="text-xs text-muted-foreground">Voting period: 7 days from creation</p>
+                <div className="flex gap-3 justify-end pt-2">
+                  <DialogClose asChild>
+                    <Button variant="ghost" className="text-muted-foreground">Cancel</Button>
+                  </DialogClose>
+                  <Button onClick={handleCreateProposal} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    <Plus className="h-4 w-4 mr-1" /> Create Proposal
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
