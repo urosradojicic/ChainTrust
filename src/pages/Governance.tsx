@@ -37,6 +37,7 @@ const INITIAL_PLEDGES: PlatformPledge[] = [
 const TOTAL_STARTUPS = STARTUPS.length;
 
 export default function Governance() {
+  const { user } = useAuth();
   const [tab, setTab] = useState<Tab>('Active');
   const [delegateAddr, setDelegateAddr] = useState('');
   const [pledges, setPledges] = useState<PlatformPledge[]>(INITIAL_PLEDGES);
@@ -45,11 +46,44 @@ export default function Governance() {
   const [newMetric, setNewMetric] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Proposal modal state
+  const [proposalModalOpen, setProposalModalOpen] = useState(false);
+  const [proposalTitle, setProposalTitle] = useState('');
+  const [proposalDesc, setProposalDesc] = useState('');
+
+  // DB proposals
+  const [dbProposals, setDbProposals] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchProposals();
+  }, []);
+
+  const fetchProposals = async () => {
+    const { data } = await supabase.from('proposals').select('*').order('created_at', { ascending: false });
+    if (data) setDbProposals(data);
+  };
+
+  // Merge mock + DB proposals
+  const allProposals = useMemo(() => {
+    const dbMapped = dbProposals.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description || '',
+      proposer: p.proposer,
+      status: p.status,
+      forVotes: p.votes_for,
+      againstVotes: p.votes_against,
+      abstainVotes: p.votes_abstain,
+      endDate: p.ends_at || new Date().toISOString(),
+    }));
+    return [...dbMapped, ...PROPOSALS];
+  }, [dbProposals]);
+
   const filtered = useMemo(() => {
-    if (tab === 'All') return PROPOSALS;
+    if (tab === 'All') return allProposals;
     if (tab === 'Sustainability Pledges') return [];
-    return PROPOSALS.filter(p => p.status === tab);
-  }, [tab]);
+    return allProposals.filter(p => p.status === tab);
+  }, [tab, allProposals]);
 
   const tabs: Tab[] = ['Active', 'Passed', 'Sustainability Pledges', 'All'];
   const tabCounts: Record<Tab, number> = {
