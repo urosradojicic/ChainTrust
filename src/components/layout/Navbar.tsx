@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut, User, Sun, Moon, Wallet, ChevronDown } from 'lucide-react';
-import WalletConnectModal from '@/components/WalletConnectModal';
+import { LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
 
 const NAV_LINKS = [
   { path: '/dashboard', label: 'Dashboard', live: true },
